@@ -11,7 +11,7 @@ export function TabNavigator() {
 
   return (
       <div>
-        <Tabs className="hidden lg:flex" aria-label="Sites" color="primary" variant="bordered"
+        <Tabs aria-label="Sites" color="primary" variant="bordered"
               selectedKey={pathname}>
           <Tab
               key="/candidates"

@@ -9,10 +9,10 @@ import {HamburgerNavigator} from "@/app/components/navigation/HamburgerNavigator
 export function Navbar() {
   return (
       <nav className="flex w-full p-3 items-center justify-between flex-wrap">
-        <div className="hidden lg:flex">
+        <div className="hidden md:flex">
           <TabNavigator/>
         </div>
-        <div className="lg:hidden">
+        <div className="md:hidden">
           <HamburgerNavigator/>
         </div>
         <ThemeSwitcher/>

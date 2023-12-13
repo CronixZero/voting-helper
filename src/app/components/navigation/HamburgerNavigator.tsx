@@ -12,7 +12,7 @@ export function HamburgerNavigator() {
         <Dropdown>
           <DropdownTrigger>
             <Button
-                className="w-10 h-10 flex items-center justify-center rounded-lg bg-default-100 hover:bg-default-200">
+                isIconOnly className="w-10 h-10 flex items-center justify-center rounded-lg bg-default-100 hover:bg-default-200">
               <MenuRoundedIcon/>
             </Button>
           </DropdownTrigger>

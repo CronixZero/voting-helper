@@ -49,7 +49,7 @@ export function CandidateEdit(props: Readonly<{ candidate: Candidate }>) {
 
   return (
       <div>
-        <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange} backdrop="opaque">
+        <Modal isOpen={isOpen} placement="top" onOpenChange={onOpenChange} backdrop="blur">
           <ModalContent>
             {(onClose) => (
                 <div>

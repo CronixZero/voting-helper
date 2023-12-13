@@ -27,7 +27,7 @@ export function CandidateDelete(props: Readonly<{ candidate: Candidate }>) {
 
   return (
       <div>
-        <Modal isOpen={isOpen} placement="center" onOpenChange={onOpenChange} backdrop="blur">
+        <Modal isOpen={isOpen} placement="top" onOpenChange={onOpenChange} backdrop="blur">
           <ModalContent>
             {(onClose) => (
                 <div>

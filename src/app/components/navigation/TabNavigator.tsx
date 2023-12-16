@@ -1,16 +1,14 @@
 "use client"
 
 import {usePathname} from "next/navigation";
-import {Tabs, Tab} from "@nextui-org/react";
-import CampaignRoundedIcon from '@mui/icons-material/CampaignRounded';
-import GroupAddRoundedIcon from '@mui/icons-material/GroupAddRounded';
-import BallotRoundedIcon from '@mui/icons-material/BallotRounded';
+import {Tab, Tabs} from "@nextui-org/react";
+import {Archive, Megaphone, UsersRound} from "lucide-react";
 
 export function TabNavigator() {
   const pathname = usePathname();
 
   return (
-      <div>
+      <div className="content-center">
         <Tabs aria-label="Sites" color="primary" variant="bordered"
               selectedKey={pathname}>
           <Tab
@@ -18,7 +16,7 @@ export function TabNavigator() {
               href={"/candidates"}
               title={
                 <div className="flex items-center space-x-2">
-                  <GroupAddRoundedIcon/>
+                  <UsersRound/>
                   <span>Kandidaten</span>
                 </div>
               }
@@ -28,7 +26,7 @@ export function TabNavigator() {
               href={"/votes"}
               title={
                 <div className="flex items-center space-x-2">
-                  <BallotRoundedIcon/>
+                  <Archive/>
                   <span>Stimmen</span>
                 </div>
               }
@@ -38,7 +36,7 @@ export function TabNavigator() {
               href={"/count"}
               title={
                 <div className="flex items-center space-x-2">
-                  <CampaignRoundedIcon/>
+                  <Megaphone/>
                   <span>Auszählung</span>
                 </div>
               }

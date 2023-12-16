@@ -1,4 +1,3 @@
-import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import {
   Button,
   Modal,
@@ -14,6 +13,7 @@ import {setCandidates} from "@/app/candidates/candidatesSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
 import React from "react";
+import {Trash} from "lucide-react";
 
 export function CandidateDelete(props: Readonly<{ candidate: Candidate }>) {
   const {candidate} = props;
@@ -54,7 +54,7 @@ export function CandidateDelete(props: Readonly<{ candidate: Candidate }>) {
         <Tooltip color="danger" content="Kandidaten entfernen">
               <span className="text-lg text-danger cursor-pointer active:opacity-50"
                     onClick={onOpen}>
-            <DeleteOutlinedIcon/>
+            <Trash/>
           </span>
         </Tooltip>
       </div>

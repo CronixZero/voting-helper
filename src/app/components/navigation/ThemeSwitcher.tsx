@@ -5,6 +5,7 @@ import {useEffect, useState} from "react";
 import LightModeRoundedIcon from '@mui/icons-material/LightModeRounded';
 import DarkModeRoundedIcon from '@mui/icons-material/DarkModeRounded';
 import {SwitchProps, useSwitch, VisuallyHidden} from "@nextui-org/react";
+import {MoonStar, Sun} from "lucide-react";
 
 export function ThemeSwitcher(props: Readonly<SwitchProps>) {
   const [mounted, setMounted] = useState(false)
@@ -16,12 +17,14 @@ export function ThemeSwitcher(props: Readonly<SwitchProps>) {
     getBaseProps,
     getInputProps,
     getWrapperProps
-  } = useSwitch({...props, onChange: toggleTheme});
+  } = useSwitch({...props, onChange: toggleTheme, isSelected: theme === 'light'});
   useEffect(() => {
     setMounted(true)
   }, [])
 
-  if (!mounted) return null
+  if (!mounted) {
+    return null;
+  }
 
   function toggleTheme(): boolean {
     setTheme(theme === 'light' ? 'dark' : 'light')
@@ -44,7 +47,7 @@ export function ThemeSwitcher(props: Readonly<SwitchProps>) {
                 ],
               })}
           >
-            {isSelected ? <LightModeRoundedIcon/> : <DarkModeRoundedIcon/>}
+            {isSelected ? <Sun/> : <MoonStar/>}
           </div>
         </Component>
       </div>

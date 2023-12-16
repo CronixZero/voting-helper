@@ -27,7 +27,7 @@ export function CandidatesList() {
                       <TableRow key={candidate.id}>
                         <TableCell>{candidate.name}</TableCell>
                         <TableCell>{candidate.firstName}</TableCell>
-                        <TableCell className="flex justify-start">
+                        <TableCell className="flex justify-start content-center">
                           <CandidateEdit candidate={candidate}/>
                           <CandidateDelete candidate={candidate}/>
                         </TableCell>

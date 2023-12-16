@@ -2,9 +2,7 @@
 
 import {Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger} from "@nextui-org/react";
 import MenuRoundedIcon from '@mui/icons-material/MenuRounded';
-import CampaignRoundedIcon from '@mui/icons-material/CampaignRounded';
-import GroupAddRoundedIcon from '@mui/icons-material/GroupAddRounded';
-import BallotRoundedIcon from '@mui/icons-material/BallotRounded';
+import {Archive, Megaphone, UsersRound} from "lucide-react";
 
 export function HamburgerNavigator() {
   return (
@@ -21,21 +19,21 @@ export function HamburgerNavigator() {
                 key="/candidates"
                 aria-label="Candidates"
                 href="/candidates"
-                startContent={<GroupAddRoundedIcon/>}>
+                startContent={<UsersRound/>}>
               Kandidaten
             </DropdownItem>
             <DropdownItem
                 key="/votes"
                 aria-label="Votes"
                 href="/votes"
-                startContent={<BallotRoundedIcon/>}>
+                startContent={<Archive/>}>
               Stimmen
             </DropdownItem>
             <DropdownItem
                 key="/count"
                 aria-label="Count"
                 href="/count"
-                startContent={<CampaignRoundedIcon/>}>
+                startContent={<Megaphone/>}>
               Auszählung
             </DropdownItem>
           </DropdownMenu>

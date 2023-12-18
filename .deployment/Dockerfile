@@ -6,7 +6,7 @@ FROM base-node AS deps-node
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-# Install dependencies based on the preferred package manager
+# Install depenwdencies based on the preferred package manager
 COPY package.json yarn.lock* package-lock.json* pnpm-lock.yaml* ./
 RUN \
   if [ -f yarn.lock ]; then yarn --frozen-lockfile; \
@@ -34,48 +34,49 @@ RUN yarn build
 
 # Obsolete with Spring Static
 # Production image, copy all the files and run next
-FROM base-node AS runner-node
-WORKDIR /app
+# FROM base-node AS runner-node
+# WORKDIR /app
 
-ENV NODE_ENV production
+# ENV NODE_ENV production
 # Uncomment the following line in case you want to disable telemetry during runtime.
 # ENV NEXT_TELEMETRY_DISABLED 1
 
-RUN addgroup --system --gid 1001 nodejs
-RUN adduser --system --uid 1001 nextjs
+# RUN addgroup --system --gid 1001 nodejs
+# RUN adduser --system --uid 1001 nextjs
 
-COPY --from=builder-node /app/public ./public
+# COPY --from=builder-node /app/public ./public
 
 # Set the correct permission for prerender cache
-RUN mkdir .next
-RUN chown nextjs:nodejs .next
+# RUN mkdir .next
+# RUN chown nextjs:nodejs .next
 
 # Automatically leverage output traces to reduce image size
 # https://nextjs.org/docs/advanced-features/output-file-tracing
-COPY --from=builder-node --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder-node --chown=nextjs:nodejs /app/.next/static ./.next/static
+# COPY --from=builder-node --chown=nextjs:nodejs /app/.next/standalone ./
+# COPY --from=builder-node --chown=nextjs:nodejs /app/.next/static ./.next/static
 
-USER nextjs
+# USER nextjs
 
-EXPOSE 3000
+# EXPOSE 3000
 
-ENV PORT 3000
+# ENV PORT 3000
 # set hostname to localhost
-ENV HOSTNAME "0.0.0.0"
+# ENV HOSTNAME "0.0.0.0"
 
 # server.js is created by next build from the standalone output
 # https://nextjs.org/docs/pages/api-reference/next-config-js/output
-CMD ["node", "server.js"]
+# CMD ["node", "server.js"]
 
 # Spring
 FROM gradle:4.7.0-jdk8-alpine AS build
 COPY --chown=gradle:gradle . /home/gradle/src
-COPY --from=builder-node --chown=gradle:gradle /app/.next/standalone /home/gradle/src/main/resources/static
-COPY --from=builder-node --chown=gradle:gradle /app/.next/static /home/gradle/src/main/resources/static/.next/static
+COPY --from=builder-node --chown=gradle:gradle /app/out /home/gradle/src/main/resources/static
 WORKDIR /home/gradle/src
 RUN gradle build --no-daemon
 
+# Runner
 FROM amazoncorretto:20-alpine
 VOLUME /tmp
 COPY --from=build target/*.jar app.jar
+EXPOSE 8080
 ENTRYPOINT ["java","-jar","/app.jar"]

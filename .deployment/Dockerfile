@@ -7,11 +7,11 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 # Install dependencies based on the preferred package manager
-COPY ../frontend/package.json ../frontend/yarn.lock* ../frontend/package-lock.json* ../frontend/pnpm-lock.yaml* ./
+COPY frontend/package.json frontend/yarn.lock* frontend/package-lock.json* frontend/pnpm-lock.yaml* ./
 RUN \
-  if [ -f ../frontend/yarn.lock ]; then yarn --frozen-lockfile; \
-  elif [ -f ../frontend/package-lock.json ]; then npm ci; \
-  elif [ -f ../frontend/pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
+  if [ -f frontend/yarn.lock ]; then yarn --frozen-lockfile; \
+  elif [ -f frontend/package-lock.json ]; then npm ci; \
+  elif [ -f frontend/pnpm-lock.yaml ]; then yarn global add pnpm && pnpm i --frozen-lockfile; \
   else echo "Lockfile not found." && exit 1; \
   fi
 
@@ -20,7 +20,7 @@ RUN \
 FROM base-node AS builder-node
 WORKDIR /app
 COPY --from=deps-node /app/node_modules ./node_modules
-COPY ../frontend .
+COPY frontend .
 
 # Next.js collects completely anonymous telemetry data about general usage.
 # Learn more here: https://nextjs.org/telemetry
@@ -69,7 +69,7 @@ RUN yarn build
 
 # Spring
 FROM gradle:4.7.0-jdk8-alpine AS build
-COPY --chown=gradle:gradle ../backend /home/gradle/src
+COPY --chown=gradle:gradle backend /home/gradle/src
 COPY --from=builder-node --chown=gradle:gradle /app/out /home/gradle/src/main/resources/static
 WORKDIR /home/gradle/src
 RUN gradle build --no-daemon

@@ -70,7 +70,7 @@ RUN yarn build
 # Spring
 FROM gradle:8.5.0-jdk17-alpine AS build
 COPY --chown=gradle:gradle backend /home/gradle/src
-COPY --from=builder-node --chown=gradle:gradle /app/out /home/gradle/src/main/resources/static
+COPY --from=builder-node --chown=gradle:gradle /app/out /home/gradle/src/src/main/resources/static
 WORKDIR /home/gradle/src
 RUN gradle bootJar --no-daemon
 

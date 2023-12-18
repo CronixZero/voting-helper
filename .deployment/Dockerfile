@@ -68,7 +68,7 @@ RUN yarn build
 # CMD ["node", "server.js"]
 
 # Spring
-FROM gradle:4.7.0-jdk8-alpine AS build
+FROM gradle:8.5.0-jdk17-alpine AS build
 COPY --chown=gradle:gradle backend /home/gradle/src
 COPY --from=builder-node --chown=gradle:gradle /app/out /home/gradle/src/main/resources/static
 WORKDIR /home/gradle/src

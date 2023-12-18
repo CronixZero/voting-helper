@@ -23,19 +23,15 @@ export function VoteCandidateList() {
               return (
                   <AccordionItem key={candidate.id}
                                  title={candidate.name + ", " + candidate.firstName}>
-                    <div className="flex auto-cols-max gap-y-4">
-                      <div className="box">
-                      {
-                        candidate.votes.map((vote, index) => {
-                          return (
-                              <div key={index}>
-                                <VoteBallot rating={vote}/>
-                              </div>
-                          )
-                        })
-                      }
-                      </div>
-                    </div>
+                    {
+                      candidate.votes.map((vote, index) => {
+                        return (
+                            <div key={index}>
+                              <VoteBallot rating={vote}/>
+                            </div>
+                        )
+                      })
+                    }
                     <Button onClick={() => {
                       dispatch(setCandidates(candidates.map(mapCandidate => {
                         if (mapCandidate.id === candidate.id) {

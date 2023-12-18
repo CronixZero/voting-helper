@@ -72,11 +72,11 @@ FROM gradle:8.5.0-jdk17-alpine AS build
 COPY --chown=gradle:gradle backend /home/gradle/src
 COPY --from=builder-node --chown=gradle:gradle /app/out /home/gradle/src/main/resources/static
 WORKDIR /home/gradle/src
-RUN gradle assemble --no-daemon
+RUN gradle bootJar --no-daemon
 
 # Runner
 FROM amazoncorretto:20-alpine
 VOLUME /tmp
-COPY --from=build target/*.jar app.jar
+COPY --from=build build/libs/*.jar app.jar
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/app.jar"]

@@ -9,7 +9,7 @@ import {CandidateDelete} from "@/app/candidates/CandidateDelete";
 import {CandidateEdit} from "@/app/candidates/CandidateEdit";
 
 export function CandidatesList() {
-  const candidates: Candidate[] = useSelector((state: RootState) => state.candidates);
+  const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
 
   return (
       <div>

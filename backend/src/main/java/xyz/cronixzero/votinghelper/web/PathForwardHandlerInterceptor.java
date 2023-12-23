@@ -3,7 +3,6 @@ package xyz.cronixzero.votinghelper.web;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.HandlerInterceptor;
-import reactor.util.annotation.NonNullApi;
 
 public abstract class PathForwardHandlerInterceptor implements HandlerInterceptor {
 

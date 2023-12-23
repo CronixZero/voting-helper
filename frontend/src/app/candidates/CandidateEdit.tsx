@@ -12,15 +12,15 @@ import {
 import React from "react";
 import {Candidate} from "@/app/models";
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "@/app/store";
-import {setCandidates} from "@/app/candidates/candidatesSlice";
+import {setCandidates} from "@/app/store/slices/candidatesSlice";
 import {Settings2} from "lucide-react";
+import {RootState} from "@/app/store";
 
 export function CandidateEdit(props: Readonly<{ candidate: Candidate }>) {
   const {candidate} = props;
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
 
-  const candidates: Candidate[] = useSelector((state: RootState) => state.candidates);
+  const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
   const dispatch = useDispatch();
 
   const [name, setName] = React.useState<null | string>(candidate.name ?? null);

@@ -9,16 +9,16 @@ import {
   useDisclosure
 } from "@nextui-org/react";
 import {Candidate} from "@/app/models";
-import {setCandidates} from "@/app/candidates/candidatesSlice";
+import {setCandidates} from "@/app/store/slices/candidatesSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "@/app/store";
 import React from "react";
 import {Trash} from "lucide-react";
+import {RootState} from "@/app/store";
 
 export function CandidateDelete(props: Readonly<{ candidate: Candidate }>) {
   const {candidate} = props;
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const candidates: Candidate[] = useSelector((state: RootState) => state.candidates);
+  const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
   const dispatch = useDispatch();
 
   function deleteCandidate() {

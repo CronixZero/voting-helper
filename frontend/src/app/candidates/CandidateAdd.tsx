@@ -10,13 +10,12 @@ import {
 } from "@nextui-org/react";
 import {useDispatch, useSelector} from "react-redux";
 import {Candidate} from "@/app/models";
-import {RootState} from "@/app/store";
 // @ts-ignore
 import {v4 as uuidv4} from "uuid";
-import {setCandidates} from "@/app/candidates/candidatesSlice";
-import AddRoundedIcon from '@mui/icons-material/AddRounded';
+import {setCandidates} from "@/app/store/slices/candidatesSlice";
 import React from "react";
-import {Plus, PlusSquare} from "lucide-react";
+import {Plus} from "lucide-react";
+import {RootState} from "@/app/store";
 
 export function CandidateAdd(props: Readonly<{
   text: string,
@@ -25,7 +24,7 @@ export function CandidateAdd(props: Readonly<{
   const {text, radius} = props;
   const iconOnly = text === "";
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
-  const candidates: Candidate[] = useSelector((state: RootState) => state.candidates);
+  const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
   const dispatch = useDispatch();
   const [name, setName] = React.useState<string | null>(null);
   const nameRef = React.useRef<HTMLInputElement>(null);

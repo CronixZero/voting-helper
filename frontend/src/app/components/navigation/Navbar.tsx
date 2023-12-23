@@ -5,6 +5,7 @@ import {Divider} from "@nextui-org/react";
 import {ThemeSwitcher} from "@/app/components/navigation/ThemeSwitcher";
 import {TabNavigator} from "@/app/components/navigation/TabNavigator";
 import {HamburgerNavigator} from "@/app/components/navigation/HamburgerNavigator";
+import {SessionSwitcher} from "@/app/components/navigation/SessionSwitcher";
 
 export function Navbar() {
   return (
@@ -15,7 +16,10 @@ export function Navbar() {
         <div className="md:hidden">
           <HamburgerNavigator/>
         </div>
-        <ThemeSwitcher/>
+        <div className="flex justify-between gap-2">
+          <SessionSwitcher/>
+          <ThemeSwitcher/>
+        </div>
         <Divider className="basis-full mt-2"/>
       </nav>
   )

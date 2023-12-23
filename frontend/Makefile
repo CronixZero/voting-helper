@@ -1,3 +1,3 @@
-.PHONY: start-dev
-start-dev:
+.PHONY: dev
+dev:
 	npm run dev

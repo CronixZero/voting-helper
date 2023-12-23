@@ -5,10 +5,10 @@ import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
 import {Accordion, AccordionItem, Button} from "@nextui-org/react";
 import {VoteBallot} from "@/app/votes/VoteBallot";
-import {setCandidates} from "@/app/candidates/candidatesSlice";
+import {setCandidates} from "@/app/store/slices/candidatesSlice";
 
 export function VoteCandidateList() {
-  const candidates: Candidate[] = useSelector((state: RootState) => state.candidates);
+  const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
   const dispatch = useDispatch();
 
   function getRandomInt(max: number) {

@@ -14,7 +14,7 @@ export function SessionSwitcher() {
     if (autoConnect) {
       dispatch({type: "cloud/connect"});
     }
-  }, []);
+  });
 
   function sessionIcon() {
     if (connected) {

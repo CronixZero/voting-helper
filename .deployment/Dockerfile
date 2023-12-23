@@ -78,7 +78,9 @@ RUN gradle bootJar --no-daemon
 FROM amazoncorretto:20-alpine
 VOLUME /tmp
 COPY --from=build /home/gradle/src/build/libs/*.jar app.jar
-RUN useradd -ms /bin/bash votes
+RUN addgroup --system --gid 1001 spring
+RUN adduser --system --uid 1001 votes
+RUN chown votes:spring /app.jar
 USER votes
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","/app.jar"]

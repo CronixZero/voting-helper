@@ -2,10 +2,10 @@ package xyz.cronixzero.votinghelper.services;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import xyz.cronixzero.votinghelper.models.Candidate;
+import xyz.cronixzero.votinghelper.models.Session;
 
 @Service
 public class CandidateService {
@@ -25,8 +25,14 @@ public class CandidateService {
         .orElse(null);
   }
 
-  public void addCandidate(String session, Candidate candidate) {
-    sessionService.getSession(session).candidates().add(candidate);
+  public void addCandidate(String sessionId, Candidate candidate) {
+    Session session = sessionService.getSession(sessionId);
+
+    if(session == null) {
+      throw new IllegalArgumentException("Session with id " + sessionId + " does not exist");
+    }
+
+    session.candidates().add(candidate);
   }
 
   public Candidate editCandidate(String session, String candidateId, String name,

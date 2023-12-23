@@ -7,7 +7,9 @@ public class ExtensionAppendInterceptor extends PathForwardHandlerInterceptor {
 
   @Override
   protected String provideAlternative(String path) {
-    if (path.split("/").length >= 1 && !path.startsWith("/actuator")) {
+    if (path.startsWith("/api")
+        || path.startsWith("/actuator")
+        || path.startsWith("/ws")) {
       return null;
     }
 

@@ -23,7 +23,9 @@ Contains everything needed to deploy the Application
 Every contribution is welcome. Feel free to open Issues or create Pull Requests for things that stick out to you
 
 ## Screenshots
-
+(Desktop)
 ![image-1](https://github.com/CronixZero/voting-helper/assets/47929140/b43f4e80-c13c-4a35-949a-44f19d0ba47e)
+
+(Mobile)
 ![Screenshot_20231224_023043_Samsung Internet](https://github.com/CronixZero/voting-helper/assets/47929140/c91282cc-5878-44a3-9e0c-a4cb62d70891)
 

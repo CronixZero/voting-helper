@@ -5,7 +5,7 @@ import {useSelector} from "react-redux";
 import {Table, TableBody, TableCell, TableColumn, TableHeader, TableRow} from "@nextui-org/react";
 import {Candidate} from "@/app/models";
 import {CandidateAdd} from "@/app/candidates/CandidateAdd";
-import {CandidateDelete} from "@/app/candidates/CandidateDelete";
+import {CandidateRemove} from "@/app/candidates/CandidateRemove";
 import {CandidateEdit} from "@/app/candidates/CandidateEdit";
 
 export function CandidatesList() {
@@ -29,7 +29,7 @@ export function CandidatesList() {
                         <TableCell>{candidate.firstName}</TableCell>
                         <TableCell className="flex justify-start content-center">
                           <CandidateEdit candidate={candidate}/>
-                          <CandidateDelete candidate={candidate}/>
+                          <CandidateRemove candidate={candidate}/>
                         </TableCell>
                       </TableRow>
                   )

@@ -1,28 +1,36 @@
 package xyz.cronixzero.votinghelper.services;
 
-import java.time.Instant;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
 import org.springframework.stereotype.Service;
-import xyz.cronixzero.votinghelper.models.Candidate;
+import xyz.cronixzero.votinghelper.exceptions.SessionDuplicateException;
 import xyz.cronixzero.votinghelper.models.Session;
 
 @Service
 public class SessionService {
 
-  private final Map<String, Session> sessions = new HashMap<>();
+  private final Cache<String, Session> sessions = CacheBuilder.newBuilder()
+      .expireAfterAccess(Duration.ofHours(24))
+      .build();
 
   public Session getSession(String sessionId) {
-    return sessions.get(sessionId);
+    return sessions.getIfPresent(sessionId);
   }
 
-  public Map<String, Session> getSessions() {
+  public Cache<String, Session> getSessions() {
     return sessions;
   }
 
-  public void createSession(String sessionName) {
-    sessions.put(sessionName, new Session(sessionName, new PriorityQueue<>(), Instant.now()));
+  public void createSession(String sessionName) throws SessionDuplicateException {
+    if(sessions.getIfPresent(sessionName) != null) {
+      throw new SessionDuplicateException("Session already exists");
+    }
+
+    sessions.put(sessionName, new Session(sessionName, new PriorityQueue<>()));
   }
 
   public void addSession(Session session) {
@@ -30,14 +38,19 @@ public class SessionService {
   }
 
   public Session editSession(String sessionId, String sessionName) {
-    Session session = sessions.get(sessionId);
-    session = new Session(sessionName, session.candidates(), Instant.now());
+    Session session = sessions.getIfPresent(sessionId);
+
+    if(session == null) {
+      throw new IllegalArgumentException("Session does not exist");
+    }
+
+    session = new Session(sessionName, session.candidates());
     sessions.put(sessionId, session);
     return session;
   }
 
   public void removeSession(Session session) {
-    sessions.remove(session.sessionName());
+    sessions.invalidate(session.sessionName());
   }
 
 }

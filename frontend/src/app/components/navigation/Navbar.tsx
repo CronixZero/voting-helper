@@ -5,7 +5,7 @@ import {Divider} from "@nextui-org/react";
 import {ThemeSwitcher} from "@/app/components/navigation/ThemeSwitcher";
 import {TabNavigator} from "@/app/components/navigation/TabNavigator";
 import {HamburgerNavigator} from "@/app/components/navigation/HamburgerNavigator";
-import {SessionSwitcher} from "@/app/components/navigation/SessionSwitcher";
+import {SessionSwitcher} from "@/app/components/session/SessionSwitcher";
 
 export function Navbar() {
   return (

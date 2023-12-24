@@ -15,7 +15,6 @@ public class CandidateService {
   @Autowired
   public CandidateService(SessionService sessionService) {
     this.sessionService = sessionService;
-    sessionService.createSession("1");
   }
 
   public Candidate getCandidate(String session, String candidateId) {
@@ -35,13 +34,11 @@ public class CandidateService {
     session.candidates().add(candidate);
   }
 
-  public Candidate editCandidate(String session, String candidateId, String name,
-      String firstName) {
+  public void editCandidate(String session, String candidateId, String name, String firstName) {
     Candidate candidate = getCandidate(session, candidateId);
     candidate = new Candidate(candidate.id(), name, firstName, candidate.votes());
     removeCandidateById(session, candidateId);
     addCandidate(session, candidate);
-    return candidate;
   }
 
   public void removeCandidate(String session, Candidate candidate) {
@@ -57,7 +54,13 @@ public class CandidateService {
   /**
    * @return Unmodifiable View of all Candidates inside a Session
    * */
-  public Collection<Candidate> getCandidates(String session) {
-    return Collections.unmodifiableCollection(sessionService.getSession(session).candidates());
+  public Collection<Candidate> getCandidates(String sessionId) {
+    Session session = sessionService.getSession(sessionId);
+
+    if(session == null) {
+      throw new IllegalArgumentException("Session with id " + sessionId + " does not exist");
+    }
+
+    return Collections.unmodifiableCollection(session.candidates());
   }
 }

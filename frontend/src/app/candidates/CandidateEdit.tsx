@@ -10,7 +10,7 @@ import {
   useDisclosure
 } from "@nextui-org/react";
 import React from "react";
-import {Candidate} from "@/app/models";
+import {Candidate, CandidateEditMessage} from "@/app/models";
 import {useDispatch, useSelector} from "react-redux";
 import {setCandidates} from "@/app/store/slices/candidatesSlice";
 import {Settings2} from "lucide-react";
@@ -40,6 +40,14 @@ export function CandidateEdit(props: Readonly<{ candidate: Candidate }>) {
         return mapCandidate;
       }
     })));
+    dispatch({
+      type: "cloud/edit-candidate",
+      payload: {
+        candidateId: candidate.id,
+        name: name!,
+        firstName: firstName!
+      } as CandidateEditMessage
+    });
 
     toast.success(candidate.name + ", " + candidate.firstName + " wurde erfolgreich editiert");
   }

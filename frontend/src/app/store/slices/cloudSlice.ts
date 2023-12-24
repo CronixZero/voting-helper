@@ -10,7 +10,7 @@ export interface SessionState {
 const initialState: SessionState = {
   sessionId: '',
   connected: false,
-  autoConnect: true,
+  autoConnect: false,
 }
 
 export const cloudSlice = createSlice({

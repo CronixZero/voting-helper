@@ -1,6 +1,8 @@
 package xyz.cronixzero.votinghelper.models.messages;
 
 
-public record CandidateAddMessage(String session, String name, String firstName) {
+import java.util.Optional;
+
+public record CandidateAddMessage(Optional<String> candidateId, String name, String firstName) {
 
 }

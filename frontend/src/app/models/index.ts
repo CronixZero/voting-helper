@@ -1,5 +1,5 @@
 export interface Candidate {
-  id: any,
+  id: string,
   name: string,
   firstName: string,
   votes: number[]
@@ -10,17 +10,22 @@ export interface VotingBallot {
   votes: Map<number, number>
 }
 
+export interface SessionCreateDto {
+  initialState?: Candidate[]
+}
+
 export interface CandidateAddMessage {
   name: string,
-  firstName: string
+  firstName: string,
+  candidateId?: string
 }
 
 export interface CandidateEditMessage {
-  id: string,
+  candidateId: string,
   name: string,
   firstName: string
 }
 
-export interface CandidateDeleteMessage {
-  id: string
+export interface CandidateRemoveMessage {
+  candidateId: string
 }

@@ -4,6 +4,6 @@ import java.util.Collection;
 import java.util.Optional;
 import xyz.cronixzero.votinghelper.models.Candidate;
 
-public record SessionCreateDto(String sessionName, Optional<Collection<Candidate>> initialState) {
+public record SessionCreateDto(Collection<Candidate> initialState) {
 
 }

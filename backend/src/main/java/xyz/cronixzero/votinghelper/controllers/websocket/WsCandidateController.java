@@ -1,4 +1,4 @@
-package xyz.cronixzero.votinghelper.controller.websocket;
+package xyz.cronixzero.votinghelper.controllers.websocket;
 
 import java.util.ArrayList;
 import java.util.Collection;

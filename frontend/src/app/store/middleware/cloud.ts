@@ -41,6 +41,14 @@ export class CloudMiddleware {
           client.deactivate();
           break;
 
+        case "cloud/add-candidate":
+          client.publish({
+            destination: "/app/candidate/add",
+            // @ts-ignore
+            body: JSON.stringify(action.payload)
+          })
+          break;
+
         default:
           break;
       }

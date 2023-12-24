@@ -1,4 +1,4 @@
-package xyz.cronixzero.votinghelper.controller;
+package xyz.cronixzero.votinghelper.controllers;
 
 import java.util.Collection;
 import java.util.Optional;

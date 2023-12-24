@@ -1,4 +1,4 @@
-package xyz.cronixzero.votinghelper.controller;
+package xyz.cronixzero.votinghelper.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

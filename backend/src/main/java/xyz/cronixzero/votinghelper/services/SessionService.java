@@ -1,5 +1,6 @@
 package xyz.cronixzero.votinghelper.services;
 
+import java.time.Instant;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -16,8 +17,12 @@ public class SessionService {
     return sessions.get(sessionId);
   }
 
+  public Map<String, Session> getSessions() {
+    return sessions;
+  }
+
   public void createSession(String sessionName) {
-    sessions.put(sessionName, new Session(sessionName, new PriorityQueue<>()));
+    sessions.put(sessionName, new Session(sessionName, new PriorityQueue<>(), Instant.now()));
   }
 
   public void addSession(Session session) {
@@ -26,7 +31,7 @@ public class SessionService {
 
   public Session editSession(String sessionId, String sessionName) {
     Session session = sessions.get(sessionId);
-    session = new Session(sessionName, session.candidates());
+    session = new Session(sessionName, session.candidates(), Instant.now());
     sessions.put(sessionId, session);
     return session;
   }

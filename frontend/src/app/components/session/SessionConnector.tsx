@@ -3,6 +3,7 @@ import {setAutoConnect, setSessionId} from "@/app/store/slices/cloudSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
 import {useState} from "react";
+import {useIsMobile} from "@nextui-org/use-is-mobile";
 
 export function SessionConnector() {
   const connected: boolean = useSelector((state: RootState) => state.cloud.connected);
@@ -36,7 +37,7 @@ export function SessionConnector() {
   }
 
   function handleButtonClick() {
-    if(connected) {
+    if (connected) {
       toggleConnection();
       return;
     }
@@ -53,7 +54,9 @@ export function SessionConnector() {
 
   return (
       <div className="flex gap-2 content-center">
-        <Input radius="sm" size="sm" label="Sitzungscode eingeben" className="basis-3/5"
+        <Input radius="sm" size="sm"
+               label={useIsMobile() ? "Sitzungscode" : "Sitzungscode eingeben"}
+               className="basis-3/5"
                onKeyDown={e => onKeyDown(e)}
                isDisabled={connected}
                isInvalid={sessionCode === ""}
@@ -62,8 +65,10 @@ export function SessionConnector() {
                errorMessage={getErrorMessage(sessionCode, "Der Sitzungscode darf nicht leer sein")}/>
         <Button radius="sm" size="lg" color={connected ? "danger" : "success"}
                 className="basis-2/5"
-                onClick={handleButtonClick}>
-          {connected ? "Verbindung trennen" : "Verbinden"}
+                onClick={handleButtonClick}
+                isDisabled={sessionCode === "" || sessionCode === null}>
+          <p className="hidden md:flex">{connected ? "Verbindung trennen" : "Verbinden"}</p>
+          <p className="flex md:hidden">{connected ? "Trennen" : "Verbinden"}</p>
         </Button>
       </div>
   )

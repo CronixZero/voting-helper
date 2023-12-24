@@ -6,6 +6,7 @@ import {useState} from "react";
 import {toast} from "sonner";
 import {BASE_URL} from "@/app/constants";
 import {Candidate, SessionCreateDto} from "@/app/models";
+import {useIsMobile} from "@nextui-org/use-is-mobile";
 
 export function SessionCreator() {
   const connected: boolean = useSelector((state: RootState) => state.cloud.connected);
@@ -30,7 +31,7 @@ export function SessionCreator() {
       }
     }).then(response => {
       if (!response.ok) {
-        if(response.status === 409) {
+        if (response.status === 409) {
           toast.error("Diese Sitzung existiert bereits");
         } else {
           toast.error("Sitzung konnte nicht erstellt werden");
@@ -61,7 +62,9 @@ export function SessionCreator() {
 
   return (
       <div className="flex gap-2 content-center">
-        <Input radius="sm" size="sm" label="Sitzungscode eingeben" className="basis-3/5"
+        <Input radius="sm" size="sm"
+               label={useIsMobile() ? "Sitzungscode" : "Sitzungscode eingeben"}
+               className="basis-3/5"
                onKeyDown={e => onKeyDown(e)}
                isDisabled={connected}
                isInvalid={sessionCode === ""}
@@ -72,7 +75,8 @@ export function SessionCreator() {
                 className="basis-2/5"
                 onClick={createSessionAndConnect}
                 isDisabled={connected}>
-          <p>Sitzung erstellen</p>
+          <p className="hidden md:flex">Sitzung erstellen</p>
+          <p className="flex md:hidden">Erstellen</p>
         </Button>
       </div>
   )

@@ -16,6 +16,7 @@ import {setCandidates} from "@/app/store/slices/candidatesSlice";
 import React from "react";
 import {Plus} from "lucide-react";
 import {RootState} from "@/app/store";
+import {toast} from "sonner";
 
 export function CandidateAdd(props: Readonly<{
   text: string,
@@ -37,9 +38,11 @@ export function CandidateAdd(props: Readonly<{
       firstName: firstName!,
       votes: []
     }
+
     dispatch(setCandidates([...candidates, newCandidate].toSorted(function (a, b) {
       return a.name.localeCompare(b.name);
     })));
+    toast.success("Neuer Kandidat wurde erfolgreich hinzugefügt");
   }
 
   function submit(onClose: () => void) {

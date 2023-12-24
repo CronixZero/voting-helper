@@ -4,6 +4,7 @@ import './globals.css'
 import React from "react";
 import {Providers} from "@/app/providers";
 import {Navbar} from "@/app/components/navigation/Navbar";
+import {Toaster} from "sonner";
 
 const inter = Inter({subsets: ['latin']})
 
@@ -27,6 +28,7 @@ export default function RootLayout({
         <Navbar/>
         <div className="pr-3 pl-3">
           {children}
+          <Toaster/>
         </div>
       </Providers>
       </body>

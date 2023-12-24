@@ -6,6 +6,8 @@ import {RootState} from "@/app/store";
 import {Accordion, AccordionItem, Button} from "@nextui-org/react";
 import {VoteBallot} from "@/app/votes/VoteBallot";
 import {setCandidates} from "@/app/store/slices/candidatesSlice";
+import {toast} from "sonner";
+import {useTheme} from "next-themes";
 
 export function VoteCandidateList() {
   const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
@@ -43,6 +45,7 @@ export function VoteCandidateList() {
                           return mapCandidate;
                         }
                       })));
+                      toast.success("Neue Stimme wurde hinzugefügt.");
                     }}>
                       Add Vote
                     </Button>

@@ -15,6 +15,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {setCandidates} from "@/app/store/slices/candidatesSlice";
 import {Settings2} from "lucide-react";
 import {RootState} from "@/app/store";
+import {toast} from "sonner";
 
 export function CandidateEdit(props: Readonly<{ candidate: Candidate }>) {
   const {candidate} = props;
@@ -39,6 +40,8 @@ export function CandidateEdit(props: Readonly<{ candidate: Candidate }>) {
         return mapCandidate;
       }
     })));
+
+    toast.success(candidate.name + ", " + candidate.firstName + " wurde erfolgreich editiert");
   }
 
   function submit(onClose: () => void) {
@@ -107,8 +110,8 @@ export function CandidateEdit(props: Readonly<{ candidate: Candidate }>) {
             )}
           </ModalContent>
         </Modal>
-        <Tooltip color="secondary" content="Kandidaten editieren">
-                          <span className="text-lg text-secondary cursor-pointer active:opacity-50"
+        <Tooltip color="primary" content="Kandidaten editieren">
+                          <span className="text-lg text-primary cursor-pointer active:opacity-50"
                                 onClick={onOpen}>
                             <Settings2/>
                           </span>

@@ -31,9 +31,9 @@ export function SessionSwitcher() {
   function getButtonClasses() {
     let classes = "w-10 h-10 mr-0 flex items-center justify-center rounded-lg";
     if (connected) {
-      classes += " bg-success";
+      classes += " bg-success hover:bg-success-600";
     } else {
-      classes += " bg-default-100";
+      classes += " bg-default-100 hover:bg-default-200";
     }
     return classes;
   }

@@ -14,6 +14,7 @@ import {useDispatch, useSelector} from "react-redux";
 import React from "react";
 import {Trash} from "lucide-react";
 import {RootState} from "@/app/store";
+import {toast} from "sonner";
 
 export function CandidateDelete(props: Readonly<{ candidate: Candidate }>) {
   const {candidate} = props;
@@ -23,6 +24,7 @@ export function CandidateDelete(props: Readonly<{ candidate: Candidate }>) {
 
   function deleteCandidate() {
     dispatch(setCandidates(candidates.filter(filterCandidate => filterCandidate.id !== candidate.id)));
+    toast.error("Kandidat wurde erfolgreich entfernt");
   }
 
   return (

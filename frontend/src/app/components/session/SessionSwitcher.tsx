@@ -11,16 +11,20 @@ import {
 } from "@nextui-org/react";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {setAutoConnect} from "@/app/store/slices/cloudSlice";
 import {CardHeader} from "@nextui-org/card";
 import {SessionConnector} from "@/app/components/session/SessionConnector";
 import {SessionCreator} from "@/app/components/session/SessionCreator";
+import {ConnectionConfirmationDialog} from "@/app/components/session/ConnectionConfirmationDialog";
 
 export function SessionSwitcher() {
   const connected: boolean = useSelector((state: RootState) => state.cloud.connected);
   const autoConnect: boolean = useSelector((state: RootState) => state.cloud.autoConnect);
   const dispatch = useDispatch();
+  const [popoverOpen, setPopoverOpen] = useState(false);
+  const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+  const [confirmationSessionCode, setConfirmationSessionCode] = useState<string | null>(null);
 
   useEffect(() => {
     if (autoConnect) {
@@ -73,7 +77,11 @@ export function SessionSwitcher() {
 
   return (
       <div>
-        <Popover>
+        <ConnectionConfirmationDialog setPopoverOpen={setPopoverOpen}
+                                      isOpen={confirmationDialogOpen}
+                                      onOpenChange={setConfirmationDialogOpen}
+                                      sessionCode={confirmationSessionCode}/>
+        <Popover isOpen={popoverOpen} onOpenChange={setPopoverOpen}>
           <PopoverTrigger>
             <Button color={connected ? "success" : undefined} isIconOnly
                     className={getButtonClasses()}>
@@ -90,7 +98,9 @@ export function SessionSwitcher() {
               </div>
               <Accordion variant="bordered" defaultExpandedKeys={["cloud-connection"]}>
                 <AccordionItem key="cloud-connection" title="Cloud Verbindung">
-                  <SessionConnector/>
+                  <SessionConnector setPopoverOpen={setPopoverOpen}
+                                    setConfirmationDialogOpen={setConfirmationDialogOpen}
+                                    setConfirmationSessionCode={setConfirmationSessionCode}/>
                 </AccordionItem>
                 <AccordionItem key="cloud-session-create" title="Sitzung erstellen">
                   <SessionCreator/>

@@ -13,7 +13,7 @@ This project is still work in progress!
 ## Structure
 
 `backend/`
-The backend is based on Spring Boot and serves the Frontend in Production
+The Backend is based on Spring Boot and serves the Frontend in Production
 
 `frontend/`
 The Frontend is based on Next.JS (React) and NextUI with Lucide Icons. 

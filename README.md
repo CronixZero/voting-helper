@@ -15,10 +15,10 @@ This project is still work in progress!
 `backend/`
 The backend is based on Spring Boot and serves the Frontend in Production
 
-`frontend`
+`frontend/`
 The Frontend is based on Next.JS (React) and NextUI with Lucide Icons. 
 
-`.deployment`
+`.deployment/`
 Contains everything needed to deploy the Application
 
 ## Deployment

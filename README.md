@@ -22,7 +22,7 @@ The Frontend is based on Next.JS (React) and NextUI with Lucide Icons.
 Contains everything needed to deploy the Application
 
 ## Deployment
-1. Build the Docker Image with the Dockerfile suppliedin .deployment
+1. Build the Docker Image with the Dockerfile supplied in .deployment
 2. Run the Docker Image and open port 8080
 
 ## Contributing

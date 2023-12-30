@@ -1,4 +1,10 @@
-# Voting-Helper
+<p align="center"><img align="center" width="512" src="./.public/Arbiter-Banner.png"/></p>
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=nextjs,react,ts,tailwindcss,java,spring,docker" />
+  <br/>
+  <a href="https://votes.mikka.systems"><kbd>🟢 Online</kbd></a> <a><kbd>🟡 By CronixZero</kbd></a> <a><kbd>🔴 Made with ❤️</kbd></a>
+</p>
+<br/><br/>
 A simple FullStack Web Application to help you get to the final score of votes.
 The Voting-Helper also includes a Session System which allows online cooperation to add Candidates and Votes synchronized across all devices via WebSockets.
 

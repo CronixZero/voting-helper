@@ -29,3 +29,9 @@ export interface CandidateEditMessage {
 export interface CandidateRemoveMessage {
   candidateId: string
 }
+
+export interface HistoryEntry {
+  sessionId?: string,
+  undo?: () => void,
+  redo?: () => void
+}

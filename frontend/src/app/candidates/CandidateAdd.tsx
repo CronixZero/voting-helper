@@ -9,7 +9,7 @@ import {
   useDisclosure
 } from "@nextui-org/react";
 import {useDispatch, useSelector} from "react-redux";
-import {Candidate, CandidateAddMessage} from "@/app/models";
+import {Candidate} from "@/app/models";
 // @ts-ignore
 import {v4 as uuidv4} from "uuid";
 import {setCandidates} from "@/app/store/slices/candidatesSlice";
@@ -17,6 +17,7 @@ import React from "react";
 import {Plus} from "lucide-react";
 import {RootState} from "@/app/store";
 import {toast} from "sonner";
+import {cloudAddCandidate} from "@/app/store/middleware/cloud";
 
 export function CandidateAdd(props: Readonly<{
   text: string,
@@ -42,14 +43,11 @@ export function CandidateAdd(props: Readonly<{
     dispatch(setCandidates([...candidates, newCandidate].toSorted(function (a, b) {
       return a.name.localeCompare(b.name);
     })));
-    dispatch({
-      type: "cloud/add-candidate",
-      payload: {
-        candidateId: newCandidate.id,
-        name: newCandidate.name,
-        firstName: newCandidate.firstName
-      } as CandidateAddMessage
-    });
+    dispatch(cloudAddCandidate({
+      candidateId: newCandidate.id,
+      name: newCandidate.name,
+      firstName: newCandidate.firstName
+    }));
     toast.success("Neuer Kandidat wurde erfolgreich hinzugefügt");
   }
 

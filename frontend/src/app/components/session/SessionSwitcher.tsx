@@ -1,22 +1,20 @@
 import {CloudOff, UploadCloud} from "lucide-react";
 import {
-  Accordion, AccordionItem,
+  Accordion,
+  AccordionItem,
   Button,
-  Card,
-  CardBody, CardFooter, Chip,
-  Divider, Input,
+  Chip,
   Popover,
   PopoverContent,
-  PopoverTrigger, Tabs
+  PopoverTrigger
 } from "@nextui-org/react";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
 import {useEffect, useState} from "react";
-import {setAutoConnect} from "@/app/store/slices/cloudSlice";
-import {CardHeader} from "@nextui-org/card";
 import {SessionConnector} from "@/app/components/session/SessionConnector";
 import {SessionCreator} from "@/app/components/session/SessionCreator";
 import {ConnectionConfirmationDialog} from "@/app/components/session/ConnectionConfirmationDialog";
+import {cloudConnect} from "@/app/store/middleware/cloud";
 
 export function SessionSwitcher() {
   const connected: boolean = useSelector((state: RootState) => state.cloud.connected);
@@ -28,7 +26,7 @@ export function SessionSwitcher() {
 
   useEffect(() => {
     if (autoConnect) {
-      dispatch({type: "cloud/connect"});
+      dispatch(cloudConnect());
     }
   });
 
@@ -63,16 +61,6 @@ export function SessionSwitcher() {
     }
 
     return classes;
-  }
-
-  function toggleConnection() {
-    if (connected) {
-      dispatch({type: "cloud/disconnect"});
-      dispatch(setAutoConnect(false));
-    } else {
-      dispatch({type: "cloud/connect"});
-      dispatch(setAutoConnect(true));
-    }
   }
 
   return (

@@ -1,11 +1,11 @@
 import {Button, Input} from "@nextui-org/react";
-import {setAutoConnect, setSessionId} from "@/app/store/slices/cloudSlice";
+import {setSessionId} from "@/app/store/slices/cloudSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
 import {useState} from "react";
 import {useIsMobile} from "@nextui-org/use-is-mobile";
-import {setCandidates} from "@/app/store/slices/candidatesSlice";
 import {Candidate} from "@/app/models";
+import {cloudConnect, cloudDisconnect} from "@/app/store/middleware/cloud";
 
 export function SessionConnector(props: Readonly<{
   setConfirmationDialogOpen: (open: boolean) => void,
@@ -26,18 +26,11 @@ export function SessionConnector(props: Readonly<{
     }
 
     dispatch(setSessionId(sessionCode));
-    toggleConnection();
+    dispatch(cloudConnect());
   }
 
-  function toggleConnection() {
-    if (connected) {
-      dispatch({type: "cloud/disconnect"});
-      dispatch(setCandidates([]));
-      dispatch(setAutoConnect(false));
-    } else {
-      dispatch({type: "cloud/connect"});
-      dispatch(setAutoConnect(true));
-    }
+  function disconnect() {
+    dispatch(cloudDisconnect());
   }
 
   function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
@@ -58,7 +51,7 @@ export function SessionConnector(props: Readonly<{
     }
 
     if (connected) {
-      toggleConnection();
+      disconnect();
     } else {
       submitConnection();
     }

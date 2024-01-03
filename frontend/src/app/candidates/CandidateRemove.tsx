@@ -8,13 +8,14 @@ import {
   Tooltip,
   useDisclosure
 } from "@nextui-org/react";
-import {Candidate, CandidateRemoveMessage} from "@/app/models";
+import {Candidate} from "@/app/models";
 import {setCandidates} from "@/app/store/slices/candidatesSlice";
 import {useDispatch, useSelector} from "react-redux";
 import React from "react";
 import {Trash} from "lucide-react";
 import {RootState} from "@/app/store";
 import {toast} from "sonner";
+import {cloudRemoveCandidate} from "@/app/store/middleware/cloud";
 
 export function CandidateRemove(props: Readonly<{ candidate: Candidate }>) {
   const {candidate} = props;
@@ -23,11 +24,9 @@ export function CandidateRemove(props: Readonly<{ candidate: Candidate }>) {
   const dispatch = useDispatch();
 
   function deleteCandidate() {
-    dispatch({
-      type: "cloud/remove-candidate", payload: {
-        candidateId: candidate.id
-      } as CandidateRemoveMessage
-    })
+    dispatch(cloudRemoveCandidate({
+      candidateId: candidate.id
+    }))
     dispatch(setCandidates(candidates.filter(filterCandidate => filterCandidate.id !== candidate.id)));
     toast.error("Kandidat wurde erfolgreich entfernt");
   }

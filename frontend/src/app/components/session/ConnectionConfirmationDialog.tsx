@@ -1,9 +1,9 @@
 import {Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader} from "@nextui-org/react";
-import {setAutoConnect, setSessionId} from "@/app/store/slices/cloudSlice";
-import {setCandidates} from "@/app/store/slices/candidatesSlice";
+import {setSessionId} from "@/app/store/slices/cloudSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
 import {toast} from "sonner";
+import {cloudConnect, cloudDisconnect} from "@/app/store/middleware/cloud";
 
 export function ConnectionConfirmationDialog(props: Readonly<{
   setPopoverOpen: (open: boolean) => void,
@@ -21,23 +21,16 @@ export function ConnectionConfirmationDialog(props: Readonly<{
     }
 
     dispatch(setSessionId(sessionCode));
-    toggleConnection();
+    dispatch(cloudConnect());
   }
 
-  function toggleConnection() {
-    if (connected) {
-      dispatch({type: "cloud/disconnect"});
-      dispatch(setCandidates([]));
-      dispatch(setAutoConnect(false));
-    } else {
-      dispatch({type: "cloud/connect"});
-      dispatch(setAutoConnect(true));
-    }
+  function disconnect() {
+    dispatch(cloudDisconnect());
   }
 
   function handleModalContinue(onClose: () => void) {
     if (connected) {
-      toggleConnection();
+      disconnect();
       onClose();
       setPopoverOpen(true);
       return;

@@ -10,12 +10,13 @@ import {
   useDisclosure
 } from "@nextui-org/react";
 import React from "react";
-import {Candidate, CandidateEditMessage} from "@/app/models";
+import {Candidate} from "@/app/models";
 import {useDispatch, useSelector} from "react-redux";
 import {setCandidates} from "@/app/store/slices/candidatesSlice";
 import {Settings2} from "lucide-react";
 import {RootState} from "@/app/store";
 import {toast} from "sonner";
+import {cloudEditCandidate} from "@/app/store/middleware/cloud";
 
 export function CandidateEdit(props: Readonly<{ candidate: Candidate }>) {
   const {candidate} = props;
@@ -40,14 +41,11 @@ export function CandidateEdit(props: Readonly<{ candidate: Candidate }>) {
         return mapCandidate;
       }
     })));
-    dispatch({
-      type: "cloud/edit-candidate",
-      payload: {
-        candidateId: candidate.id,
-        name: name!,
-        firstName: firstName!
-      } as CandidateEditMessage
-    });
+    dispatch(cloudEditCandidate({
+      candidateId: candidate.id,
+      name: name!,
+      firstName: firstName!
+    }));
 
     toast.success(candidate.name + ", " + candidate.firstName + " wurde erfolgreich editiert");
   }

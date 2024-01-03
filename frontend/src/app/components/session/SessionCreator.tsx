@@ -1,5 +1,5 @@
 import {Button, Input} from "@nextui-org/react";
-import {setAutoConnect, setSessionId} from "@/app/store/slices/cloudSlice";
+import {setSessionId} from "@/app/store/slices/cloudSlice";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
 import {useState} from "react";
@@ -7,6 +7,7 @@ import {toast} from "sonner";
 import {BASE_URL} from "@/app/constants";
 import {Candidate, SessionCreateDto} from "@/app/models";
 import {useIsMobile} from "@nextui-org/use-is-mobile";
+import {cloudConnect} from "@/app/store/middleware/cloud";
 
 export function SessionCreator() {
   const connected: boolean = useSelector((state: RootState) => state.cloud.connected);
@@ -41,8 +42,7 @@ export function SessionCreator() {
 
       dispatch(setSessionId(sessionCode));
 
-      dispatch({type: "cloud/connect"});
-      dispatch(setAutoConnect(true));
+      dispatch(cloudConnect());
       toast.info("Sitzung erfolgreich erstellt")
     });
   }

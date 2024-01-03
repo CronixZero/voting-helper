@@ -1,12 +1,20 @@
-import {Middleware} from "redux";
+import {Action, Middleware} from "redux";
 import {RootState} from "@/app/store";
 import {Client} from "@stomp/stompjs";
 import {setAutoConnect, setConnected} from "@/app/store/slices/cloudSlice";
 import {setCandidates} from "@/app/store/slices/candidatesSlice";
-import {Candidate} from "@/app/models";
+import {
+  Candidate,
+  CandidateAddMessage,
+  CandidateEditMessage,
+  CandidateRemoveMessage
+} from "@/app/models";
 import {toast} from "sonner";
 import {BASE_URL} from "@/app/constants";
 import {HttpError} from "@/app/errors/HttpException";
+import {PayloadAction} from "@reduxjs/toolkit";
+import {historyAddHistoryEntry} from "@/app/store/middleware/changeHistory";
+import {setHistory} from "@/app/store/slices/changeHistorySlice";
 
 export class CloudMiddleware {
   private client;
@@ -63,8 +71,6 @@ export class CloudMiddleware {
           const oldCandidates = state.candidates.candidates
           const newCandidates = JSON.parse(message.body)
 
-          console.log("oldCandidates", oldCandidates, "newCandidates", newCandidates);
-
           this.sendToastsForDifferences(oldCandidates, newCandidates);
           dispatch(setCandidates(newCandidates));
         });
@@ -85,6 +91,9 @@ export class CloudMiddleware {
           }
 
           client.activate();
+          if (!storeApi.getState().cloud.autoConnect) {
+            dispatch(setAutoConnect(true));
+          }
           break;
 
         case "cloud/disconnect":
@@ -93,8 +102,11 @@ export class CloudMiddleware {
             return;
           }
 
+          dispatch(setAutoConnect(false));
           client.deactivate()
           .then(() => {
+            dispatch(setCandidates([]));
+            dispatch(setHistory([{}]));
           });
           break;
 
@@ -107,7 +119,24 @@ export class CloudMiddleware {
             destination: `/app/candidates/add/${sessionId}`,
             // @ts-ignore
             body: JSON.stringify(action.payload)
-          })
+          });
+          dispatch(historyAddHistoryEntry(({
+            sessionId: sessionId,
+            undo: () => {
+              client.publish({
+                destination: `/app/candidates/remove/${sessionId}`,
+                // @ts-ignore
+                body: JSON.stringify(action.payload)
+              });
+            },
+            redo: () => {
+              client.publish({
+                destination: `/app/candidates/add/${sessionId}`,
+                // @ts-ignore
+                body: JSON.stringify(action.payload)
+              })
+            }
+          })));
           break;
 
         case "cloud/edit-candidate":
@@ -115,11 +144,37 @@ export class CloudMiddleware {
             return;
           }
 
+          // @ts-ignore
+          const candidateEditMessage: CandidateEditMessage = action.payload;
+          const oldEditCandidate: Candidate = storeApi.getState().candidates.candidates.find((candidate: Candidate) => {
+            return candidate.id === candidateEditMessage.candidateId;
+          })!;
+
           client.publish({
             destination: `/app/candidates/edit/${sessionId}`,
             // @ts-ignore
-            body: JSON.stringify(action.payload)
-          })
+            body: JSON.stringify(candidateEditMessage)
+          });
+          dispatch(historyAddHistoryEntry({
+            sessionId: sessionId,
+            undo: () => {
+              client.publish({
+                destination: `/app/candidates/edit/${sessionId}`,
+                body: JSON.stringify({
+                  candidateId: oldEditCandidate.id,
+                  name: oldEditCandidate.name,
+                  firstName: oldEditCandidate.firstName
+                } as CandidateEditMessage)
+              })
+            },
+            redo: () => {
+              client.publish({
+                destination: `/app/candidates/edit/${sessionId}`,
+                // @ts-ignore
+                body: JSON.stringify(candidateEditMessage)
+              })
+            }
+          }));
           break;
 
         case "cloud/remove-candidate":
@@ -127,11 +182,37 @@ export class CloudMiddleware {
             return;
           }
 
+          // @ts-ignore
+          const candidateRemoveMessage: CandidateRemoveMessage = action.payload;
+          const oldRemoveCandidate: Candidate = storeApi.getState().candidates.candidates.find((candidate: Candidate) => {
+            return candidate.id === candidateRemoveMessage.candidateId;
+          })!;
+
           client.publish({
             destination: `/app/candidates/remove/${sessionId}`,
             // @ts-ignore
             body: JSON.stringify(action.payload)
-          })
+          });
+          dispatch(historyAddHistoryEntry({
+            sessionId: sessionId,
+            undo: () => {
+              client.publish({
+                destination: `/app/candidates/add/${sessionId}`,
+                body: JSON.stringify({
+                  candidateId: oldRemoveCandidate.id,
+                  name: oldRemoveCandidate.name,
+                  firstName: oldRemoveCandidate.firstName
+                } as CandidateAddMessage)
+              });
+            },
+            redo: () => {
+              client.publish({
+                destination: `/app/candidates/remove/${sessionId}`,
+                // @ts-ignore
+                body: JSON.stringify(action.payload)
+              });
+            }
+          }));
           break;
 
         default:
@@ -195,3 +276,39 @@ export class CloudMiddleware {
     }
   }
 }
+
+// Action creators
+function cloudAddCandidate(message: CandidateAddMessage): PayloadAction<CandidateAddMessage> {
+  return {
+    type: "cloud/add-candidate",
+    payload: message
+  }
+}
+
+function cloudEditCandidate(message: CandidateEditMessage): PayloadAction<CandidateEditMessage> {
+  return {
+    type: "cloud/edit-candidate",
+    payload: message
+  }
+}
+
+function cloudRemoveCandidate(message: CandidateRemoveMessage): PayloadAction<CandidateRemoveMessage> {
+  return {
+    type: "cloud/remove-candidate",
+    payload: message
+  }
+}
+
+function cloudConnect(): Action {
+  return {
+    type: "cloud/connect"
+  }
+}
+
+function cloudDisconnect(): Action {
+  return {
+    type: "cloud/disconnect"
+  }
+}
+
+export {cloudConnect, cloudDisconnect, cloudAddCandidate, cloudEditCandidate, cloudRemoveCandidate}

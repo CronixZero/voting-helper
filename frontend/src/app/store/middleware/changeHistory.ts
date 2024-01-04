@@ -56,7 +56,7 @@ export class ChangeHistoryMiddleware {
           break;
 
         case "history/redo":
-          if (isRedoAllowed
+          if (!isRedoAllowed
               || !isConnected // TODO: SEPERATION: CLOUD / OFFLINE
               || historyIndex >= history.length - 1
               || (isConnected

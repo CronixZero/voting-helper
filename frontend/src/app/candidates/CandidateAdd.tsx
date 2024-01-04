@@ -40,9 +40,7 @@ export function CandidateAdd(props: Readonly<{
       votes: []
     }
 
-    dispatch(setCandidates([...candidates, newCandidate].toSorted(function (a, b) {
-      return a.name.localeCompare(b.name);
-    })));
+    dispatch(setCandidates([...candidates, newCandidate].toSorted((a, b) => a.name.localeCompare(b.name))));
     dispatch(cloudAddCandidate({
       candidateId: newCandidate.id,
       name: newCandidate.name,

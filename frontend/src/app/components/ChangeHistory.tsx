@@ -7,9 +7,8 @@ import {RootState} from "@/app/store";
 export function ChangeHistory() {
   const undoAllowed: boolean = useSelector((state: RootState) => state.changeHistory.undoAllowed);
   const redoAllowed: boolean = useSelector((state: RootState) => state.changeHistory.redoAllowed);
+  const connected: boolean = useSelector((state: RootState) => state.cloud.connected);
   const dispatch = useDispatch();
-
-  console.log("undoAllowed: " + undoAllowed, "redoAllowed: " + redoAllowed);
 
   function doUndo() {
     dispatch(historyUndo());
@@ -20,19 +19,15 @@ export function ChangeHistory() {
   }
 
   return (
-      <div>
-        <ButtonGroup>
+      <div className={!connected ? "hidden" : ""}>
+        <ButtonGroup variant="bordered">
           <Button isIconOnly
                   onClick={doUndo}
-                  color="default"
-                  variant="bordered"
                   disabled={!undoAllowed}>
             <Undo2/>
           </Button>
           <Button isIconOnly
                   onClick={doRedo}
-                  color="default"
-                  variant="bordered"
                   disabled={!redoAllowed}>
             <Redo2/>
           </Button>

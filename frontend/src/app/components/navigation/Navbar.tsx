@@ -6,7 +6,7 @@ import {ThemeSwitcher} from "@/app/components/navigation/ThemeSwitcher";
 import {TabNavigator} from "@/app/components/navigation/TabNavigator";
 import {HamburgerNavigator} from "@/app/components/navigation/HamburgerNavigator";
 import {SessionSwitcher} from "@/app/components/session/SessionSwitcher";
-import {ChangeHistory} from "@/app/components/navigation/ChangeHistory";
+import {ChangeHistory} from "@/app/components/ChangeHistory";
 
 export function Navbar() {
   return (

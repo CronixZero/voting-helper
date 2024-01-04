@@ -68,8 +68,6 @@ export function SessionConnector(props: Readonly<{
   function updateSessionCode(sessionCode: string) {
     setSessionCode(sessionCode);
     setConfirmationSessionCode(sessionCode);
-
-    console.log(sessionCode);
   }
 
   return (

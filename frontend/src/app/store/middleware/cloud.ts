@@ -123,6 +123,10 @@ export class CloudMiddleware {
           dispatch(historyAddHistoryEntry(({
             sessionId: sessionId,
             undo: () => {
+              dispatch(setCandidates(storeApi.getState().candidates.candidates.filter((candidate: Candidate) => {
+                // @ts-ignore
+                return candidate.id !== action.payload.candidateId;
+              }).toSorted((a, b) => a.name.localeCompare(b.name))));
               client.publish({
                 destination: `/app/candidates/remove/${sessionId}`,
                 // @ts-ignore
@@ -130,6 +134,13 @@ export class CloudMiddleware {
               });
             },
             redo: () => {
+              // @ts-ignore
+              const message: CandidateAddMessage = action.payload;
+              dispatch(setCandidates([...storeApi.getState().candidates.candidates, {
+                id: message.candidateId,
+                name: message.name,
+                firstName: message.firstName
+              } as Candidate].toSorted((a, b) => a.name.localeCompare(b.name))));
               client.publish({
                 destination: `/app/candidates/add/${sessionId}`,
                 // @ts-ignore
@@ -158,6 +169,17 @@ export class CloudMiddleware {
           dispatch(historyAddHistoryEntry({
             sessionId: sessionId,
             undo: () => {
+              dispatch(setCandidates(storeApi.getState().candidates.candidates.map((candidate: Candidate) => {
+                if (candidate.id !== oldEditCandidate.id) {
+                  return candidate;
+                }
+
+                return {
+                  ...candidate,
+                  name: oldEditCandidate.name,
+                  firstName: oldEditCandidate.firstName
+                };
+              }).toSorted((a, b) => a.name.localeCompare(b.name))));
               client.publish({
                 destination: `/app/candidates/edit/${sessionId}`,
                 body: JSON.stringify({
@@ -165,14 +187,25 @@ export class CloudMiddleware {
                   name: oldEditCandidate.name,
                   firstName: oldEditCandidate.firstName
                 } as CandidateEditMessage)
-              })
+              });
             },
             redo: () => {
+              dispatch(setCandidates(storeApi.getState().candidates.candidates.map((candidate: Candidate) => {
+                if (candidate.id !== candidateEditMessage.candidateId) {
+                  return candidate;
+                }
+
+                return {
+                  ...candidate,
+                  name: candidateEditMessage.name,
+                  firstName: candidateEditMessage.firstName
+                };
+              }).toSorted((a, b) => a.name.localeCompare(b.name))));
               client.publish({
                 destination: `/app/candidates/edit/${sessionId}`,
                 // @ts-ignore
                 body: JSON.stringify(candidateEditMessage)
-              })
+              });
             }
           }));
           break;
@@ -196,6 +229,8 @@ export class CloudMiddleware {
           dispatch(historyAddHistoryEntry({
             sessionId: sessionId,
             undo: () => {
+              dispatch(setCandidates([...storeApi.getState().candidates.candidates, oldRemoveCandidate]
+              .toSorted((a, b) => a.name.localeCompare(b.name))));
               client.publish({
                 destination: `/app/candidates/add/${sessionId}`,
                 body: JSON.stringify({
@@ -206,6 +241,9 @@ export class CloudMiddleware {
               });
             },
             redo: () => {
+              dispatch(setCandidates(storeApi.getState().candidates.candidates.filter((candidate: Candidate) => {
+                return candidate.id !== oldRemoveCandidate.id;
+              }).toSorted((a, b) => a.name.localeCompare(b.name))));
               client.publish({
                 destination: `/app/candidates/remove/${sessionId}`,
                 // @ts-ignore

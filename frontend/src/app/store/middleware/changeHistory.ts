@@ -8,6 +8,7 @@ import {
   setRedoAllowed,
   setUndoAllowed
 } from "@/app/store/slices/changeHistorySlice";
+import {toast} from "sonner";
 
 // TODO: SEPERATION: CLOUD / OFFLINE & ADD CANDIDATES WITHOUT WAITING FOR CLOUD
 export class ChangeHistoryMiddleware {
@@ -20,13 +21,19 @@ export class ChangeHistoryMiddleware {
       const sessionId = storeApi.getState().cloud.sessionId;
       const history = storeApi.getState().changeHistory.history;
       const historyIndex = storeApi.getState().changeHistory.historyIndex;
+      const isRedoAllowed = storeApi.getState().changeHistory.redoAllowed;
+      const isUndoAllowed = storeApi.getState().changeHistory.undoAllowed;
       const isConnected = storeApi.getState().cloud.connected;
 
       // @ts-ignore
       switch (action.type) {
         case "history/undo":
-          if (historyIndex < 0
-              || sessionId != history[historyIndex]!.sessionId) {
+          if (!isUndoAllowed
+              || !isConnected // TODO: SEPERATION: CLOUD / OFFLINE
+              || historyIndex < 0
+              || (isConnected
+                  && historyIndex !== 0
+                  && sessionId != history[historyIndex]!.sessionId)) {
             dispatch(setUndoAllowed(false));
             break;
           }
@@ -39,39 +46,42 @@ export class ChangeHistoryMiddleware {
             dispatch(setUndoAllowed(false));
           }
 
-          if(history[historyIndex]!.redo) {
+          if (history[historyIndex]!.redo) {
             dispatch(setRedoAllowed(true));
           }
 
           history[historyIndex]!.undo!();
           dispatch(setHistoryIndex(historyIndex - 1));
+          toast.info("Rückgängig gemacht");
           break;
 
         case "history/redo":
-          if (historyIndex >= history.length - 1
-              || (isConnected && sessionId != history[historyIndex]!.sessionId)) {
+          if (isRedoAllowed
+              || !isConnected // TODO: SEPERATION: CLOUD / OFFLINE
+              || historyIndex >= history.length - 1
+              || (isConnected
+                  && historyIndex !== 0
+                  && sessionId != history[historyIndex + 1]!.sessionId)
+              || !history[historyIndex + 1]!.redo) {
             dispatch(setRedoAllowed(false));
-            console.log(historyIndex >= history.length - 1,
-                "ID_CHECK: ", sessionId != history[historyIndex]!.sessionId,
-                "HISTORY_ID, ID: ", history[historyIndex]!.sessionId, sessionId,
-                "INDEX, HISTORY_LENGTH-1: ", historyIndex, history.length - 1);
             break;
           }
 
-          if (history[historyIndex + 1]
-              && history[historyIndex + 1]!.sessionId == sessionId
-              && history[historyIndex + 1].redo) {
+          if (history[historyIndex + 2]
+              && history[historyIndex + 2]!.sessionId == sessionId
+              && history[historyIndex + 2].redo) {
             dispatch(setRedoAllowed(true));
-            console.log("B");
           } else {
             dispatch(setRedoAllowed(false));
-            console.log("C");
           }
 
-          console.log("D");
-          history[historyIndex]!.redo!();
-          console.log("E");
+          if (history[historyIndex + 1]!.undo) {
+            dispatch(setUndoAllowed(true));
+          }
+
+          history[historyIndex + 1]!.redo!();
           dispatch(setHistoryIndex(historyIndex + 1));
+          toast.info("Wiederhergestellt");
           break;
 
         case "history/create":

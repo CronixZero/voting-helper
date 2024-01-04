@@ -8,6 +8,7 @@ import React from "react";
 import {persistor, store} from "@/app/store";
 import {PersistGate} from "redux-persist/integration/react";
 import {Loading} from "@/app/components/Loading";
+import {KeyPressProvider} from "@/app/KeyPressProvider";
 
 export function Providers({children}: { children: React.ReactNode }) {
   const router = useRouter();
@@ -17,7 +18,8 @@ export function Providers({children}: { children: React.ReactNode }) {
         <NextThemesProvider attribute="class" defaultTheme="dark">
           <ReduxProvider store={store}>
             <PersistGate loading={(<Loading/>)} persistor={persistor}>
-            {children}
+              <KeyPressProvider/>
+              {children}
             </PersistGate>
           </ReduxProvider>
         </NextThemesProvider>

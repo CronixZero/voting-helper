@@ -1,49 +1,37 @@
-import {Button, Card, CardBody, CardFooter, Slider} from "@nextui-org/react";
-import {Eye, Settings2, Trash} from "lucide-react";
+import {Card, CardBody} from "@nextui-org/react";
 import React from "react";
+import {toast} from "sonner";
 
 export function VoteBallot(props: Readonly<{ rating: number }>) {
   const {rating} = props;
 
+  function getBackgroundColor() {
+    if (rating === 0) {
+      return "bg-emerald-400";
+    } else if (rating === 1) {
+      return "bg-emerald-500";
+    } else if (rating === 2) {
+      return "bg-emerald-600";
+    } else if (rating === 3) {
+      return "bg-emerald-700";
+    } else if (rating === 4) {
+      return "bg-emerald-800";
+    } else if (rating === 5) {
+      return "bg-emerald-900";
+    }
+  }
+
+  function onClick() {
+    toast.info("Clicked on " + rating);
+  }
+
   return (
       <div>
-        <div className="flex gap-3 justify-between">
-          <Slider
-              showOutline
-              showSteps
-              size="md"
-              step={1}
-              color="primary"
-              maxValue={5}
-              minValue={0}
-              value={rating}
-          />
-          <div className="flex gap-2">
-            <Button isIconOnly variant="ghost" color="primary">
-              <Settings2/>
-            </Button>
-            <Button isIconOnly variant="ghost" color="danger">
-              <Trash/>
-            </Button>
-          </div>
-        </div>
-        <Card isFooterBlurred className="hidden max-w-sm max-h-xl">
-          <CardBody>
-            <span></span>
+        <Card isPressable onClick={onClick}
+              className={getBackgroundColor() + " flex w-20 h-20 justify-center content-center"}>
+          <CardBody className="flex justify-center items-center mx-auto">
+            <span className="text-2xl">{rating}</span>
           </CardBody>
-          <CardFooter className="flex justify-end">
-            <div className="flex gap-2">
-              <Button isIconOnly variant="ghost" color="primary">
-                <Eye/>
-              </Button>
-              <Button isIconOnly variant="ghost" color="primary">
-                <Settings2/>
-              </Button>
-              <Button isIconOnly variant="ghost" color="danger">
-                <Trash/>
-              </Button>
-            </div>
-          </CardFooter>
         </Card>
       </div>
   )

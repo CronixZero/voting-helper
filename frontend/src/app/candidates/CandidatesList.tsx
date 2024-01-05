@@ -38,7 +38,7 @@ export function CandidatesList() {
             </TableBody>
           </Table>
           <div className="hidden md:block ml-2">
-            <CandidateAdd text="Kandidat hinzufügen" radius="sm"/>
+            <CandidateAdd text="Kandidat hinzufügen" variant="ghost" radius="sm"/>
           </div>
         </div>
       </div>

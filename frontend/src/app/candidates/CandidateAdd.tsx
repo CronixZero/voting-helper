@@ -22,8 +22,9 @@ import {cloudAddCandidate} from "@/app/store/middleware/cloud";
 export function CandidateAdd(props: Readonly<{
   text: string,
   radius: "none" | "sm" | "md" | "lg" | "full" | undefined
+  variant: "flat" | "shadow" | "solid" | "bordered" | "light" | "faded" | "ghost" | undefined
 }>) {
-  const {text, radius} = props;
+  const {text, radius, variant} = props;
   const iconOnly = text === "";
   const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
@@ -127,9 +128,9 @@ export function CandidateAdd(props: Readonly<{
           </ModalContent>
         </Modal>
         <Button onClick={onOpen} isIconOnly={iconOnly} radius={radius} color="success"
-                variant="ghost">
+                variant={variant}>
           {text}
-          <Plus/>
+          <Plus size={30}/>
         </Button>
       </div>
   )

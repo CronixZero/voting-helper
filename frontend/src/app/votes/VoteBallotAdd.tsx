@@ -25,6 +25,7 @@ import {
 // @ts-ignore
 import {v4 as uuidv4} from "uuid";
 import {addVoteBallot} from "@/app/store/middleware/votes";
+import {wait} from "next/dist/lib/wait";
 
 export function VoteBallotAdd() {
   const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
@@ -36,29 +37,41 @@ export function VoteBallotAdd() {
   } as VotingBallot);
   const [sheetOpen, setSheetOpen] = useState(false)
   const [currentCandidate, setCurrentCandidate] = useState(candidates[0]);
+  const [inputBlocked, setInputBlocked] = useState(false);
 
   useEffect(() => {
     setCandidateVotes({
       id: uuidv4(),
       votes: []
     } as VotingBallot);
+    setCurrentCandidate(candidates[0]);
+    setInputBlocked(false);
   }, [sheetOpen]);
 
   function isBallotValid() {
     return candidateVotes.votes.length === candidates.length;
   }
 
-  function submit(onClose: () => void, openAgain: boolean = false) {
+  function submit(openAgain: boolean = false) {
     if (!isBallotValid()) {
       return;
     }
 
     dispatch(addVoteBallot(candidateVotes));
 
-    onClose();
+    setSheetOpen(false);
 
     if (openAgain) {
       setSheetOpen(true);
+    }
+  }
+
+  function goToNextCandidate() {
+    const currentIndex = candidates.findIndex(candidate => candidate.id === currentCandidate.id);
+    const nextCandidate = candidates[currentIndex + 1];
+
+    if (nextCandidate) {
+      setCurrentCandidate(nextCandidate);
     }
   }
 
@@ -86,6 +99,15 @@ export function VoteBallotAdd() {
                 <Select value={currentCandidate.id}
                         onValueChange={(value) => {
                           setCurrentCandidate(candidates.find(candidate => candidate.id === value)!);
+                        }}
+                        onOpenChange={(open) => {
+                          if (!open) {
+                            wait(50).then(() => {
+                              setInputBlocked(false);
+                            });
+                          }
+
+                          setInputBlocked(open);
                         }}>
                   <SelectTrigger className="w-[180px]">
                     <SelectValue placeholder="Kandidaten auswählen"/>
@@ -105,7 +127,7 @@ export function VoteBallotAdd() {
                 <Slider step={1}
                         value={candidateVotes.votes.find(vote => vote.candidateId === currentCandidate.id)?.rating ?? 0}
                         onChange={(value) => {
-                          if (typeof value !== "number") {
+                          if (typeof value !== "number" || inputBlocked) {
                             return;
                           }
 
@@ -117,6 +139,9 @@ export function VoteBallotAdd() {
                               rating: value
                             })
                           } as VotingBallot);
+                        }}
+                        onChangeEnd={() => {
+                          goToNextCandidate();
                         }}
                         maxValue={5}
                         minValue={0}
@@ -143,16 +168,14 @@ export function VoteBallotAdd() {
               <SheetClose asChild>
                 <Button color="success"
                         isDisabled={!isBallotValid()}
-                        onClick={() => submit(() => {
-                        })}>
+                        onClick={() => submit()}>
                   Speichern
                 </Button>
               </SheetClose>
               <SheetClose asChild>
                 <Button color="success"
                         isDisabled={!isBallotValid()}
-                        onClick={() => submit(() => {
-                        }, true)}>
+                        onClick={() => submit(true)}>
                   Speichern ...
                 </Button>
               </SheetClose>

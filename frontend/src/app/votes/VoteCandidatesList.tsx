@@ -3,9 +3,9 @@
 import {Candidate} from "@/app/models";
 import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
-import {CandidateVoteList2} from "@/app/votes/CandidateVoteList2";
+import {CandidateVoteList} from "@/app/votes/CandidateVoteList";
 
-export function VoteCandidatesList2() {
+export function VoteCandidatesList() {
   const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
   const dispatch = useDispatch();
 
@@ -18,7 +18,7 @@ export function VoteCandidatesList2() {
         {candidates.map((candidate) => {
           return (
               <div key={candidate.id}>
-                <CandidateVoteList2 candidate={candidate}/>
+                <CandidateVoteList candidate={candidate}/>
               </div>
           )
         })}

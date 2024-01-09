@@ -1,71 +1,33 @@
+import {Card, CardBody, CardHeader} from "@nextui-org/react";
 import {Candidate} from "@/app/models";
-import {useMemo, useState} from "react";
-import {VoteBallot} from "@/app/votes/VoteBallot";
-import {Button, Pagination} from "@nextui-org/react";
-import {setCandidates} from "@/app/store/slices/candidatesSlice";
-import {toast} from "sonner";
-import {useDispatch, useSelector} from "react-redux";
-import {RootState} from "@/app/store";
-import {useIsMobile} from "@nextui-org/use-is-mobile";
+import {CountedVoteBallot} from "@/app/votes/CountedVoteBallot";
 
-export function CandidateVoteList(props: Readonly<{
-  candidate: Candidate
-}>) {
-  const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
-  const dispatch = useDispatch();
-
+export function CandidateVoteList(props: Readonly<{ candidate: Candidate }>) {
   const {candidate} = props;
-  const votesPerPage = useIsMobile() ? 24 : 50;
 
-  const votes = candidate.votes;
-  const [page, setPage] = useState(1);
-  const pages = Math.ceil(props.candidate.votes.length / votesPerPage);
-
-  const items = useMemo(() => {
-    const start = (page - 1) * votesPerPage;
-    const end = start + votesPerPage;
-
-    return votes.slice(start, end);
-  }, [page, votes]);
-
-  function getRandomInt(max: number) {
-    return Math.floor(Math.random() * max);
-  }
-
-  function addNewRandomVote(candidate: Candidate) {
-    dispatch(setCandidates(candidates.map(mapCandidate => {
-      if (mapCandidate.id === candidate.id) {
-        return {
-          ...mapCandidate,
-          votes: [...mapCandidate.votes, getRandomInt(6)]
-          .toSorted((a, b) => (a - b))
-        }
-      } else {
-        return mapCandidate;
-      }
-    })));
-    toast.success("Neue Stimme wurde hinzugefügt.");
+  function getVoteCount(rating: number) {
+    return candidate.votes.filter(vote => vote === rating).length;
   }
 
   return (
       <div>
-        <div className={"flex flex-wrap gap-2 justify-center"}>
-          {items.map((vote, index) => {
-            return (
-                <div key={index} className="justify-self-start">
-                  <VoteBallot rating={vote}/>
-                </div>
-            )
-          })}
-        </div>
-        <div className="flex justify-center md:justify-end gap-3 mt-4">
-          <Pagination className="m-0 p-0" isCompact showControls total={pages}
-                      onChange={setPage} page={page} initialPage={1}
-                      size={useIsMobile() ? "sm" : "lg"}/>
-          <Button onClick={() => addNewRandomVote(candidate)}>
-            Add Vote
-          </Button>
-        </div>
+        <Card className="max-w-screen-sm min-w-full">
+          <CardHeader>
+            <div className="flex justify-center">
+              <span className="text-2xl">{candidate.name + ", " + candidate.firstName}</span>
+            </div>
+          </CardHeader>
+          <CardBody className="flex justify-center">
+            <div className="grid grid-rows-2 grid-flow-col gap-2 justify-center">
+              <CountedVoteBallot rating={0} count={getVoteCount(0)}/>
+              <CountedVoteBallot rating={1} count={getVoteCount(1)}/>
+              <CountedVoteBallot rating={2} count={getVoteCount(2)}/>
+              <CountedVoteBallot rating={3} count={getVoteCount(3)}/>
+              <CountedVoteBallot rating={4} count={getVoteCount(4)}/>
+              <CountedVoteBallot rating={5} count={getVoteCount(5)}/>
+            </div>
+          </CardBody>
+        </Card>
       </div>
   )
 }

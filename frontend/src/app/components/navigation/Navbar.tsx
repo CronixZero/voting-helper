@@ -7,6 +7,7 @@ import {TabNavigator} from "@/app/components/navigation/TabNavigator";
 import {HamburgerNavigator} from "@/app/components/navigation/HamburgerNavigator";
 import {SessionSwitcher} from "@/app/components/session/SessionSwitcher";
 import {ChangeHistory} from "@/app/components/ChangeHistory";
+import {SwipeNavigator} from "@/app/components/navigation/SwipeNavigator";
 
 export function Navbar() {
   return (
@@ -16,6 +17,7 @@ export function Navbar() {
         </div>
         <div className="md:hidden">
           <HamburgerNavigator/>
+          <SwipeNavigator/>
         </div>
         <div className="flex justify-between gap-2">
           <ChangeHistory/>

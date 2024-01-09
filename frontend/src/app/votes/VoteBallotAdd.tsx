@@ -1,39 +1,41 @@
-import {
-  Button,
-  Modal,
-  ModalBody,
-  ModalContent, ModalFooter,
-  ModalHeader,
-  useDisclosure
-} from "@nextui-org/react";
+import {Button, Slider} from "@nextui-org/react";
 import {useIsMobile} from "@nextui-org/use-is-mobile";
 import {Plus} from "lucide-react";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Candidate} from "@/app/models";
 import {useSelector} from "react-redux";
 import {RootState} from "@/app/store";
-import {Paper} from "@mui/material";
 import {
-  Sheet, SheetClose,
-  SheetContent, SheetDescription, SheetFooter,
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
   SheetHeader,
   SheetTitle,
   SheetTrigger
 } from "@/app/components/ui/sheet";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from "@/app/components/ui/select";
 
 export function VoteBallotAdd() {
-  const {isOpen, onOpen, onOpenChange} = useDisclosure();
   const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
   const [candidateVotes, setCandidateVotes]
       = useState(new Map<string, number>());
+  const [sheetOpen, setSheetOpen] = useState(false)
+  const [currentCandidate, setCurrentCandidate] = useState(candidates[0]);
 
-  function openModal() {
-
-  }
+  useEffect(() => {
+    setCandidateVotes(new Map<string, number>());
+  }, [sheetOpen]);
 
   function isBallotValid() {
     return candidateVotes.size === candidates.length;
-
   }
 
   function submit(onClose: () => void, openAgain: boolean = false) {
@@ -44,13 +46,13 @@ export function VoteBallotAdd() {
     onClose();
 
     if (openAgain) {
-      onOpen();
+      setSheetOpen(true);
     }
   }
 
   return (
       <div>
-        <Sheet>
+        <Sheet open={sheetOpen} onOpenChange={setSheetOpen}>
           <SheetTrigger asChild>
             <Button className="fixed right-0 bottom-0 m-3 z-[1]"
                     isIconOnly={useIsMobile()}
@@ -58,7 +60,7 @@ export function VoteBallotAdd() {
                     variant="solid"
                     size={useIsMobile() ? undefined : "lg"}
                     radius={useIsMobile() ? "lg" : "sm"}>
-              {useIsMobile() ? "" : "Stimme hinzufügen"}
+              {useIsMobile() ? "" : "Stimmen hinzufügen"}
               <Plus size={30}/>
             </Button>
           </SheetTrigger>
@@ -67,10 +69,53 @@ export function VoteBallotAdd() {
               <SheetTitle>Stimme hinzufügen</SheetTitle>
               <SheetDescription>Füge einen Stimmzettel hinzu</SheetDescription>
             </SheetHeader>
-            <div className="py-4">
-              <h1>Hello World!</h1>
+            <div className="py-6">
+              <div className="pb-3">
+                <Select value={currentCandidate.id}
+                        onValueChange={(value) => {
+                          setCurrentCandidate(candidates.find(candidate => candidate.id === value)!);
+                        }}>
+                  <SelectTrigger className="w-[180px]">
+                    <SelectValue placeholder="Kandidaten auswählen"/>
+                  </SelectTrigger>
+                  <SelectContent>
+                    {candidates.map(candidate => {
+                      return (
+                          <SelectItem key={candidate.id} value={candidate.id}>
+                            {candidate.name + ", " + candidate.firstName}
+                          </SelectItem>
+                      )
+                    })}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Slider step={1}
+                        value={candidateVotes.get(currentCandidate.id)}
+                        onChange={(value) => {
+                          if (typeof value !== "number") {
+                            return;
+                          }
+
+                          setCandidateVotes(candidateVotes.set(currentCandidate.id, value));
+                        }}
+                        maxValue={5}
+                        minValue={0}
+                        showOutline
+                        label={currentCandidate.name + ", " + currentCandidate.firstName}
+                        marks={[
+                          {value: 0, label: "0"},
+                          {value: 1, label: "1"},
+                          {value: 2, label: "2"},
+                          {value: 3, label: "3"},
+                          {value: 4, label: "4"},
+                          {value: 5, label: "5"},
+                        ]}
+                        showSteps
+                        defaultValue={0}/>
+              </div>
             </div>
-            <SheetFooter className="self-end gap-y-2">
+            <SheetFooter className="gap-y-2">
               <SheetClose asChild>
                 <Button color="danger">
                   Abbrechen
@@ -95,46 +140,6 @@ export function VoteBallotAdd() {
             </SheetFooter>
           </SheetContent>
         </Sheet>
-        <div className="hidden">
-          <Modal isOpen={isOpen} placement="top" onOpenChange={onOpenChange} backdrop="blur">
-            <ModalContent>
-              {(onClose) => (
-                  <div>
-                    <ModalHeader>Stimme hinzufügen</ModalHeader>
-                    <ModalBody>
-                      {/* Slider + Select Menu for each Candidate on Mobile and another way for Desktop */}
-                    </ModalBody>
-                    <ModalFooter>
-                      <Button color="danger" onClick={onClose}>
-                        Abbrechen
-                      </Button>
-                      <Button color="success"
-                              isDisabled={!isBallotValid()}
-                              onClick={() => submit(onClose)}>
-                        Speichern
-                      </Button>
-                      <Button color="success"
-                              isDisabled={!isBallotValid()}
-                              onClick={() => submit(onClose, true)}>
-                        Speichern ...
-                      </Button>
-                    </ModalFooter>
-                  </div>
-              )}
-            </ModalContent>
-          </Modal>
-          <div className="fixed right-0 bottom-0 m-3 z-[1]">
-            <Button isIconOnly={useIsMobile()}
-                    color="success"
-                    variant="solid"
-                    size={useIsMobile() ? undefined : "lg"}
-                    radius={useIsMobile() ? "lg" : "sm"}
-                    onClick={onOpen}>
-              {useIsMobile() ? "" : "Stimme hinzufügen"}
-              <Plus size={30}/>
-            </Button>
-          </div>
-        </div>
       </div>
   )
 }

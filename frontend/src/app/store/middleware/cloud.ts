@@ -84,7 +84,7 @@ export class CloudMiddleware {
 
       // @ts-ignore
       switch (action.type) {
-        case "cloud/connect":
+        case "cloud/connect": {
           if (client.connected) {
             dispatch(setConnected(true));
             return;
@@ -95,8 +95,9 @@ export class CloudMiddleware {
             dispatch(setAutoConnect(true));
           }
           break;
+        }
 
-        case "cloud/disconnect":
+        case "cloud/disconnect": {
           if (!client.connected) {
             dispatch(setConnected(false));
             return;
@@ -109,8 +110,9 @@ export class CloudMiddleware {
             dispatch(setHistory([{}]));
           });
           break;
+        }
 
-        case "cloud/add-candidate":
+        case "cloud/add-candidate": {
           if (!client.connected) {
             return;
           }
@@ -149,15 +151,16 @@ export class CloudMiddleware {
             }
           })));
           break;
+        }
 
-        case "cloud/edit-candidate":
+        case "cloud/edit-candidate": {
           if (!client.connected) {
             return;
           }
 
           // @ts-ignore
           const candidateEditMessage: CandidateEditMessage = action.payload;
-          const oldEditCandidate: Candidate = storeApi.getState().candidates.candidates.find((candidate: Candidate) => {
+          const oldCandidate: Candidate = storeApi.getState().candidates.candidates.find((candidate: Candidate) => {
             return candidate.id === candidateEditMessage.candidateId;
           })!;
 
@@ -170,22 +173,22 @@ export class CloudMiddleware {
             sessionId: sessionId,
             undo: () => {
               dispatch(setCandidates(storeApi.getState().candidates.candidates.map((candidate: Candidate) => {
-                if (candidate.id !== oldEditCandidate.id) {
+                if (candidate.id !== oldCandidate.id) {
                   return candidate;
                 }
 
                 return {
                   ...candidate,
-                  name: oldEditCandidate.name,
-                  firstName: oldEditCandidate.firstName
+                  name: oldCandidate.name,
+                  firstName: oldCandidate.firstName
                 };
               }).toSorted((a, b) => a.name.localeCompare(b.name))));
               client.publish({
                 destination: `/app/candidates/edit/${sessionId}`,
                 body: JSON.stringify({
-                  candidateId: oldEditCandidate.id,
-                  name: oldEditCandidate.name,
-                  firstName: oldEditCandidate.firstName
+                  candidateId: oldCandidate.id,
+                  name: oldCandidate.name,
+                  firstName: oldCandidate.firstName
                 } as CandidateEditMessage)
               });
             },
@@ -209,15 +212,16 @@ export class CloudMiddleware {
             }
           }));
           break;
+        }
 
-        case "cloud/remove-candidate":
+        case "cloud/remove-candidate": {
           if (!client.connected) {
             return;
           }
 
           // @ts-ignore
           const candidateRemoveMessage: CandidateRemoveMessage = action.payload;
-          const oldRemoveCandidate: Candidate = storeApi.getState().candidates.candidates.find((candidate: Candidate) => {
+          const oldCandidate: Candidate = storeApi.getState().candidates.candidates.find((candidate: Candidate) => {
             return candidate.id === candidateRemoveMessage.candidateId;
           })!;
 
@@ -229,20 +233,20 @@ export class CloudMiddleware {
           dispatch(historyAddHistoryEntry({
             sessionId: sessionId,
             undo: () => {
-              dispatch(setCandidates([...storeApi.getState().candidates.candidates, oldRemoveCandidate]
+              dispatch(setCandidates([...storeApi.getState().candidates.candidates, oldCandidate]
               .toSorted((a, b) => a.name.localeCompare(b.name))));
               client.publish({
                 destination: `/app/candidates/add/${sessionId}`,
                 body: JSON.stringify({
-                  candidateId: oldRemoveCandidate.id,
-                  name: oldRemoveCandidate.name,
-                  firstName: oldRemoveCandidate.firstName
+                  candidateId: oldCandidate.id,
+                  name: oldCandidate.name,
+                  firstName: oldCandidate.firstName
                 } as CandidateAddMessage)
               });
             },
             redo: () => {
               dispatch(setCandidates(storeApi.getState().candidates.candidates.filter((candidate: Candidate) => {
-                return candidate.id !== oldRemoveCandidate.id;
+                return candidate.id !== oldCandidate.id;
               }).toSorted((a, b) => a.name.localeCompare(b.name))));
               client.publish({
                 destination: `/app/candidates/remove/${sessionId}`,
@@ -252,9 +256,11 @@ export class CloudMiddleware {
             }
           }));
           break;
+        }
 
-        default:
+        default: {
           break;
+        }
       }
 
       return next(action);

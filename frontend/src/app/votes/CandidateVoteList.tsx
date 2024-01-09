@@ -6,7 +6,7 @@ export function CandidateVoteList(props: Readonly<{ candidate: Candidate }>) {
   const {candidate} = props;
 
   function getVoteCount(rating: number) {
-    return candidate.votes.filter(vote => vote === rating).length;
+    return candidate.votes.filter(vote => vote.rating === rating).length;
   }
 
   return (

@@ -2,8 +2,8 @@ import {Button, Slider} from "@nextui-org/react";
 import {useIsMobile} from "@nextui-org/use-is-mobile";
 import {Plus} from "lucide-react";
 import React, {useEffect, useState} from "react";
-import {Candidate} from "@/app/models";
-import {useSelector} from "react-redux";
+import {Candidate, VotingBallot} from "@/app/models";
+import {useDispatch, useSelector} from "react-redux";
 import {RootState} from "@/app/store";
 import {
   Sheet,
@@ -22,26 +22,38 @@ import {
   SelectTrigger,
   SelectValue
 } from "@/app/components/ui/select";
+// @ts-ignore
+import {v4 as uuidv4} from "uuid";
+import {addVoteBallot} from "@/app/store/middleware/votes";
 
 export function VoteBallotAdd() {
   const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
+  const dispatch = useDispatch();
   const [candidateVotes, setCandidateVotes]
-      = useState(new Map<string, number>());
+      = useState({
+    id: uuidv4(),
+    votes: []
+  } as VotingBallot);
   const [sheetOpen, setSheetOpen] = useState(false)
   const [currentCandidate, setCurrentCandidate] = useState(candidates[0]);
 
   useEffect(() => {
-    setCandidateVotes(new Map<string, number>());
+    setCandidateVotes({
+      id: uuidv4(),
+      votes: []
+    } as VotingBallot);
   }, [sheetOpen]);
 
   function isBallotValid() {
-    return candidateVotes.size === candidates.length;
+    return candidateVotes.votes.length === candidates.length;
   }
 
   function submit(onClose: () => void, openAgain: boolean = false) {
     if (!isBallotValid()) {
       return;
     }
+
+    dispatch(addVoteBallot(candidateVotes));
 
     onClose();
 
@@ -91,13 +103,22 @@ export function VoteBallotAdd() {
               </div>
               <div>
                 <Slider step={1}
-                        value={candidateVotes.get(currentCandidate.id)}
+                        value={candidateVotes.votes.find(vote => vote.candidateId === currentCandidate.id)?.rating ?? 0}
                         onChange={(value) => {
+                          console.log(value);
+
                           if (typeof value !== "number") {
                             return;
                           }
 
-                          setCandidateVotes(candidateVotes.set(currentCandidate.id, value));
+                          setCandidateVotes({
+                            ...candidateVotes,
+                            votes: candidateVotes.votes.filter(vote => vote.candidateId !== currentCandidate.id).concat({
+                              ballotId: candidateVotes.id,
+                              candidateId: currentCandidate.id,
+                              rating: value
+                            })
+                          } as VotingBallot);
                         }}
                         maxValue={5}
                         minValue={0}

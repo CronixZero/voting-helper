@@ -27,7 +27,7 @@ export class ChangeHistoryMiddleware {
 
       // @ts-ignore
       switch (action.type) {
-        case "history/undo":
+        case "history/undo": {
           if (!isUndoAllowed
               || !isConnected // TODO: SEPERATION: CLOUD / OFFLINE
               || historyIndex < 0
@@ -54,8 +54,9 @@ export class ChangeHistoryMiddleware {
           dispatch(setHistoryIndex(historyIndex - 1));
           toast.info("Rückgängig gemacht");
           break;
+        }
 
-        case "history/redo":
+        case "history/redo": {
           if (!isRedoAllowed
               || !isConnected // TODO: SEPERATION: CLOUD / OFFLINE
               || historyIndex >= history.length - 1
@@ -83,8 +84,9 @@ export class ChangeHistoryMiddleware {
           dispatch(setHistoryIndex(historyIndex + 1));
           toast.info("Wiederhergestellt");
           break;
+        }
 
-        case "history/create":
+        case "history/create": {
           // @ts-ignore
           const historyEntry: HistoryEntry = action.payload;
 
@@ -94,9 +96,11 @@ export class ChangeHistoryMiddleware {
 
           dispatch(addHistoryEntry(historyEntry));
           break;
+        }
 
-        default:
+        default: {
           break;
+        }
       }
 
       return next(action);

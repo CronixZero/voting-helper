@@ -1,13 +1,19 @@
+export interface Vote {
+  candidateId: string,
+  ballotId: string,
+  rating: number
+}
+
 export interface Candidate {
   id: string,
   name: string,
   firstName: string,
-  votes: number[]
+  votes: Vote[]
 }
 
 export interface VotingBallot {
-  // key: candidate id, value: vote rating
-  votes: Map<number, number>
+  id: string,
+  votes: Vote[]
 }
 
 export interface SessionCreateDto {

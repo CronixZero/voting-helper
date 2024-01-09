@@ -105,8 +105,6 @@ export function VoteBallotAdd() {
                 <Slider step={1}
                         value={candidateVotes.votes.find(vote => vote.candidateId === currentCandidate.id)?.rating ?? 0}
                         onChange={(value) => {
-                          console.log(value);
-
                           if (typeof value !== "number") {
                             return;
                           }

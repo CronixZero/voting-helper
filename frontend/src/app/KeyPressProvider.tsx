@@ -13,7 +13,7 @@ export function KeyPressProvider() {
     if (event.ctrlKey && event.key === "y") {
       dispatch(historyRedo());
     }
-  }, []);
+  }, [dispatch]);
 
   useEffect(() => {
     // attach the event listener

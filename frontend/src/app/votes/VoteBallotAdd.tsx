@@ -26,6 +26,7 @@ import {
 import {v4 as uuidv4} from "uuid";
 import {addVoteBallot} from "@/app/store/middleware/votes";
 import {wait} from "next/dist/lib/wait";
+import {toast} from "sonner";
 
 export function VoteBallotAdd() {
   const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
@@ -39,31 +40,31 @@ export function VoteBallotAdd() {
   const [currentCandidate, setCurrentCandidate] = useState(candidates[0]);
   const [inputBlocked, setInputBlocked] = useState(false);
 
-  useEffect(() => {
+  function resetSidebarToDefaults() {
     setCandidateVotes({
       id: uuidv4(),
       votes: []
     } as VotingBallot);
     setCurrentCandidate(candidates[0]);
     setInputBlocked(false);
+  }
+
+  useEffect(() => {
+    resetSidebarToDefaults();
   }, [sheetOpen]);
 
   function isBallotValid() {
     return candidateVotes.votes.length === candidates.length;
   }
 
-  function submit(openAgain: boolean = false) {
+  function submit() {
     if (!isBallotValid()) {
       return;
     }
 
     dispatch(addVoteBallot(candidateVotes));
-
-    setSheetOpen(false);
-
-    if (openAgain) {
-      setSheetOpen(true);
-    }
+    resetSidebarToDefaults();
+    toast.info("Stimmzettel erfolgreich hinzugefügt");
   }
 
   function goToNextCandidate() {
@@ -172,13 +173,11 @@ export function VoteBallotAdd() {
                   Speichern
                 </Button>
               </SheetClose>
-              <SheetClose asChild>
-                <Button color="success"
-                        isDisabled={!isBallotValid()}
-                        onClick={() => submit(true)}>
-                  Speichern ...
-                </Button>
-              </SheetClose>
+              <Button color="success"
+                      isDisabled={!isBallotValid()}
+                      onClick={() => submit()}>
+                Speichern ...
+              </Button>
             </SheetFooter>
           </SheetContent>
         </Sheet>

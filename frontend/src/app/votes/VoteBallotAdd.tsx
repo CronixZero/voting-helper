@@ -51,7 +51,7 @@ export function VoteBallotAdd() {
 
   useEffect(() => {
     resetSidebarToDefaults();
-  }, [sheetOpen]);
+  }, [sheetOpen, resetSidebarToDefaults]);
 
   function isBallotValid() {
     return candidateVotes.votes.length === candidates.length;

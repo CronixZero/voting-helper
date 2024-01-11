@@ -2,13 +2,13 @@ import type {PayloadAction} from '@reduxjs/toolkit'
 import {createSlice} from '@reduxjs/toolkit'
 
 export interface SessionState {
-  sessionId: string,
+  sessionId: string | null,
   connected: boolean,
   autoConnect: boolean
 }
 
 const initialState: SessionState = {
-  sessionId: '',
+  sessionId: null,
   connected: false,
   autoConnect: false,
 }

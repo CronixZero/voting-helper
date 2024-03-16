@@ -14,7 +14,7 @@ export function SessionConnector(props: Readonly<{
 }>) {
   const {setConfirmationDialogOpen, setPopoverOpen, setConfirmationSessionCode} = props;
   const connected: boolean = useSelector((state: RootState) => state.cloud.connected);
-  const sessionId: string = useSelector((state: RootState) => state.cloud.sessionId);
+  const sessionId: (string | null) = useSelector((state: RootState) => state.cloud.sessionId);
   const candidates: Candidate[] = useSelector((state: RootState) => state.candidates.candidates);
   const dispatch = useDispatch();
   const [sessionCode, setSessionCode] = useState<string | null>(sessionId ?? null);

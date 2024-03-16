@@ -3,14 +3,10 @@ package xyz.cronixzero.votinghelper.controllers.websocket;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.UUID;
-import java.util.logging.Level;
-import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
-import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import xyz.cronixzero.votinghelper.models.Candidate;
 import xyz.cronixzero.votinghelper.models.messages.CandidateAddMessage;
@@ -20,7 +16,6 @@ import xyz.cronixzero.votinghelper.services.CandidateService;
 
 @Controller
 @MessageMapping("/candidates")
-@Log
 public class WsCandidateController {
 
   private final CandidateService candidateService;

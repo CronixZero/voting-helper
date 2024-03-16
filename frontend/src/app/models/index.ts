@@ -37,7 +37,7 @@ export interface CandidateRemoveMessage {
 }
 
 export interface HistoryEntry {
-  sessionId?: string,
+  sessionId?: (string | null),
   undo?: () => void,
   redo?: () => void
 }
